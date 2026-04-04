@@ -1,0 +1,567 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sellaris AI — Turn Conversations Into Sales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="static/css/index.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+<style>
+
+</style>
+</head>
+<body>
+
+<!-- Background orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- ========================
+     NAVBAR
+========================= -->
+<nav id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M9 2L15.5 5.5V12.5L9 16L2.5 12.5V5.5L9 2Z" stroke="white" stroke-width="1.5" fill="none"/>
+            <circle cx="9" cy="9" r="2.5" fill="white"/>
+          </svg>
+        </div>
+        Sellaris AI
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="#" class="btn btn-ghost">Log in</a>
+        <a href="#" class="btn btn-primary">Get Started</a>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#features" class="mobile-link">Features</a>
+  <a href="#how" class="mobile-link">How It Works</a>
+  <a href="#pricing" class="mobile-link">Pricing</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+  <a href="#" class="btn btn-primary" style="margin-top:12px">Get Started</a>
+</div>
+
+<!-- ========================
+     HERO
+========================= -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <!-- Left: Copy -->
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          Trusted by 2,400+ businesses worldwide
+        </div>
+        <h1 class="hero-title">
+          Turn Conversations<br/>
+          Into Sales —<br/>
+          <span class="gradient-text" id="typingTarget">Automatically.</span>
+        </h1>
+        <p class="hero-sub">
+          Sellaris AI replies instantly, engages customers, and closes deals across your website and messaging platforms — 24/7, without lifting a finger.
+        </p>
+        <div class="hero-btns">
+          <a href="#" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Start Free Trial
+          </a>
+          <a href="#demo" class="btn btn-ghost">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l6 4-6 4V4z" fill="currentColor"/></svg>
+            Watch Demo
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-num">98%</div>
+            <div class="stat-label">Reply Rate</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">3.2×</div>
+            <div class="stat-label">Sales Boost</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">&lt;2s</div>
+            <div class="stat-label">Response Time</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Chat Demo -->
+      <div class="hero-chat">
+        <div class="hero-float hero-float-1">
+          ✅ New order confirmed — $149
+        </div>
+        <div class="chat-phone">
+          <div class="chat-header">
+            <div class="chat-avatar">🤖</div>
+            <div>
+              <div class="chat-name">Sellaris AI Agent</div>
+              <div class="chat-status"><span class="online-dot"></span> Online · Replying instantly</div>
+            </div>
+          </div>
+          <div class="chat-messages" id="heroChatMessages">
+            <!-- Messages inserted by JS -->
+          </div>
+        </div>
+        <div class="hero-float hero-float-2">
+          📈 Conversion rate +37% this week
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================
+     INTEGRATIONS STRIP
+========================= -->
+<div class="integrations">
+  <div class="container">
+    <p class="integrations-label">Works seamlessly with your platforms</p>
+  </div>
+  <div class="integrations-track" id="intTrack">
+    <!-- Duplicated by JS for seamless loop -->
+    <div class="int-badge">💬 WhatsApp</div>
+    <div class="int-badge">📸 Instagram</div>
+    <div class="int-badge">🌐 Website Chat</div>
+    <div class="int-badge">📘 Facebook Messenger</div>
+    <div class="int-badge">📦 Shopify</div>
+    <div class="int-badge">🛒 WooCommerce</div>
+    <div class="int-badge">📧 Email</div>
+    <div class="int-badge">💳 Stripe</div>
+    <div class="int-badge">🔔 Telegram</div>
+    <div class="int-badge">🏪 Jumia</div>
+    <div class="int-badge">💬 WhatsApp</div>
+    <div class="int-badge">📸 Instagram</div>
+    <div class="int-badge">🌐 Website Chat</div>
+    <div class="int-badge">📘 Facebook Messenger</div>
+    <div class="int-badge">📦 Shopify</div>
+    <div class="int-badge">🛒 WooCommerce</div>
+    <div class="int-badge">📧 Email</div>
+    <div class="int-badge">💳 Stripe</div>
+    <div class="int-badge">🔔 Telegram</div>
+    <div class="int-badge">🏪 Jumia</div>
+  </div>
+</div>
+
+<!-- ========================
+     FEATURES
+========================= -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <div class="section-label">✦ Features</div>
+      <h2 class="section-title">Everything you need to sell<br/><span class="gradient-text">smarter and faster</span></h2>
+      <p class="section-sub">Sellaris AI handles the heavy lifting so your team can focus on what matters — growing your business.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon fi-1">⚡</div>
+        <h3 class="feature-title">Instant AI Replies</h3>
+        <p class="feature-desc">Responds to every customer message in under 2 seconds, day or night. Zero wait time means zero lost customers.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon fi-2">📡</div>
+        <h3 class="feature-title">Multi-Platform Support</h3>
+        <p class="feature-desc">Deploy your AI agent on WhatsApp, Instagram, Facebook Messenger, your website, and more — all from one dashboard.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon fi-3">🎯</div>
+        <h3 class="feature-title">Smart Product Recommendations</h3>
+        <p class="feature-desc">AI understands customer intent and proactively suggests the right products, upsells, and bundles to maximize revenue.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon fi-4">🎙️</div>
+        <h3 class="feature-title">Voice Note Understanding</h3>
+        <p class="feature-desc">Customers can send voice notes and Sellaris AI transcribes, understands, and replies in text or audio automatically.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon fi-5">🛒</div>
+        <h3 class="feature-title">Automated Order Handling</h3>
+        <p class="feature-desc">From browsing to checkout — the AI collects order details, confirms availability, and processes transactions seamlessly.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon fi-6">💳</div>
+        <h3 class="feature-title">Payment Integration</h3>
+        <p class="feature-desc">Integrated with Stripe, Paystack, Flutterwave, and more. Customers pay without ever leaving the conversation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================
+     HOW IT WORKS
+========================= -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="how-header reveal">
+      <div class="section-label">✦ Process</div>
+      <h2 class="section-title">Up and running in<br/><span class="gradient-text">under 10 minutes</span></h2>
+      <p class="section-sub">No technical expertise required. Connect, train, and start selling in three simple steps.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal reveal-delay-1">
+        <div class="step-icon">🔗</div>
+        <div class="step-num">01</div>
+        <h3 class="step-title">Connect Your Business</h3>
+        <p class="step-desc">Link your WhatsApp, Instagram, website, or any platform. Takes less than 2 minutes with our one-click integrations.</p>
+      </div>
+
+      <div class="step-connector">
+        <div class="connector-line"></div>
+        <div class="connector-arrow"></div>
+      </div>
+
+      <div class="step reveal reveal-delay-2">
+        <div class="step-icon">🧠</div>
+        <div class="step-num">02</div>
+        <h3 class="step-title">Train Your AI</h3>
+        <p class="step-desc">Upload your product catalog, FAQs, and brand voice. Sellaris AI learns your business inside out and gets smarter every day.</p>
+      </div>
+
+      <div class="step-connector">
+        <div class="connector-line"></div>
+        <div class="connector-arrow"></div>
+      </div>
+
+      <div class="step reveal reveal-delay-3">
+        <div class="step-icon">🚀</div>
+        <div class="step-num">03</div>
+        <h3 class="step-title">Start Selling Automatically</h3>
+        <p class="step-desc">Go live and watch Sellaris AI engage, convert, and delight customers around the clock while you focus on growth.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================
+     LIVE CHAT DEMO
+========================= -->
+<section class="demo-section" id="demo">
+  <div class="container">
+    <div class="demo-grid">
+      <div class="demo-text reveal">
+        <div class="section-label">✦ Live Demo</div>
+        <h2 class="section-title">Watch the AI<br/><span class="gradient-text">close deals live</span></h2>
+        <p class="section-sub" style="margin-bottom:32px">Experience how Sellaris AI handles real conversations — qualifying leads, answering questions, and driving sales in real time.</p>
+        <div class="demo-features">
+          <div class="demo-feat">
+            <div class="demo-feat-icon">🔄</div>
+            Understands context across multi-turn conversations
+          </div>
+          <div class="demo-feat">
+            <div class="demo-feat-icon">🎭</div>
+            Matches your brand's tone and personality
+          </div>
+          <div class="demo-feat">
+            <div class="demo-feat-icon">🌍</div>
+            Supports 40+ languages including Pidgin English
+          </div>
+          <div class="demo-feat">
+            <div class="demo-feat-icon">📊</div>
+            Detailed analytics and conversion tracking
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-2">
+        <div class="demo-chat-ui">
+          <div class="demo-chat-topbar">
+            <div class="demo-chat-title">
+              <div class="demo-chat-ai-avatar">🤖</div>
+              <div>
+                <div style="font-size:0.85rem">Sellaris AI</div>
+                <div style="font-size:0.7rem;color:var(--cyan)">● Active</div>
+              </div>
+            </div>
+            <div style="font-size:0.75rem;color:var(--text3)">Live Demo</div>
+          </div>
+          <div class="demo-chat-body" id="demoChatBody">
+            <!-- Messages by JS -->
+          </div>
+          <div class="demo-chat-input">
+            <input type="text" class="demo-input" id="demoInput" placeholder="Try asking: What products do you have?" />
+            <button class="demo-send" id="demoSend">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================
+     PRICING
+========================= -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <div class="section-label">✦ Pricing</div>
+      <h2 class="section-title">Simple, transparent<br/><span class="gradient-text">pricing that scales</span></h2>
+      <p class="section-sub">Start free, upgrade when you grow. No hidden fees, no surprises.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Starter -->
+      <div class="price-card reveal reveal-delay-1">
+        <div class="price-plan">Starter</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-num">29</span>
+          <span class="price-period">/month</span>
+        </div>
+        <p class="price-desc">Perfect for small businesses just getting started with AI sales automation.</p>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="price-feat"><span class="feat-check">✓</span>1 Platform integration</div>
+          <div class="price-feat"><span class="feat-check">✓</span>500 AI conversations/month</div>
+          <div class="price-feat"><span class="feat-check">✓</span>Basic product catalog (50 items)</div>
+          <div class="price-feat"><span class="feat-check">✓</span>Email support</div>
+          <div class="price-feat"><span class="feat-check">✓</span>Analytics dashboard</div>
+        </div>
+        <a href="#" class="btn btn-ghost price-btn price-btn-outline">Get Started Free</a>
+      </div>
+
+      <!-- Growth (Featured) -->
+      <div class="price-card featured reveal reveal-delay-2">
+        <div class="featured-badge">Most Popular</div>
+        <div class="price-plan">Growth</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-num">79</span>
+          <span class="price-period">/month</span>
+        </div>
+        <p class="price-desc">For growing businesses ready to scale with AI-powered sales across platforms.</p>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="price-feat"><span class="feat-check">✓</span>5 Platform integrations</div>
+          <div class="price-feat"><span class="feat-check">✓</span>5,000 AI conversations/month</div>
+          <div class="price-feat"><span class="feat-check">✓</span>Unlimited product catalog</div>
+          <div class="price-feat"><span class="feat-check">✓</span>Voice note understanding</div>
+          <div class="price-feat"><span class="feat-check">✓</span>Payment integration</div>
+          <div class="price-feat"><span class="feat-check">✓</span>Priority support</div>
+          <div class="price-feat"><span class="feat-check">✓</span>Advanced analytics</div>
+        </div>
+        <a href="#" class="btn btn-primary price-btn">Start Growing →</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="price-card reveal reveal-delay-3">
+        <div class="price-plan">Pro</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-num">199</span>
+          <span class="price-period">/month</span>
+        </div>
+        <p class="price-desc">Enterprise-grade AI sales infrastructure for high-volume businesses and agencies.</p>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="price-feat"><span class="feat-check">✓</span>Unlimited platforms</div>
+          <div class="price-feat"><span class="feat-check">✓</span>Unlimited conversations</div>
+          <div class="price-feat"><span class="feat-check">✓</span>Custom AI personality</div>
+          <div class="price-feat"><span class="feat-check">✓</span>API access</div>
+          <div class="price-feat"><span class="feat-check">✓</span>White-label options</div>
+          <div class="price-feat"><span class="feat-check">✓</span>Dedicated account manager</div>
+          <div class="price-feat"><span class="feat-check">✓</span>SLA guarantee (99.9% uptime)</div>
+        </div>
+        <a href="#" class="btn btn-ghost price-btn price-btn-outline">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================
+     TESTIMONIALS
+========================= -->
+<section class="testimonials" id="contact">
+  <div class="container">
+    <div class="testimonials-header reveal">
+      <div class="section-label">✦ Testimonials</div>
+      <h2 class="section-title">Businesses love<br/><span class="gradient-text">Sellaris AI</span></h2>
+      <p class="section-sub">Don't just take our word for it — hear from our customers.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testi-card reveal reveal-delay-1">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testi-text">"We connected Sellaris AI to our WhatsApp and Instagram stores. Within the first week, our sales jumped by 40%. It handles inquiries we used to miss overnight. Absolutely transformative."</p>
+        <div class="testi-author">
+          <div class="testi-avatar ta-1">AA</div>
+          <div>
+            <div class="testi-name">Adaeze Achi</div>
+            <div class="testi-role">Founder, LuxeThreads Lagos</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-2">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testi-text">"Our customer support team was overwhelmed. Sellaris AI now handles 80% of all inquiries automatically. Our team focuses on complex issues and VIP clients. Best investment of 2024."</p>
+        <div class="testi-author">
+          <div class="testi-avatar ta-2">MO</div>
+          <div>
+            <div class="testi-name">Marcus Osei</div>
+            <div class="testi-role">CEO, Akwaaba Electronics Ghana</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal reveal-delay-3">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testi-text">"I was skeptical but the results don't lie. Cart abandonment dropped by 60% and average order value increased because the AI upsells perfectly. Setup took literally 8 minutes."</p>
+        <div class="testi-author">
+          <div class="testi-avatar ta-3">FN</div>
+          <div>
+            <div class="testi-name">Fatima Ngozi</div>
+            <div class="testi-role">Director, BeautyHive Abuja</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================
+     FINAL CTA
+========================= -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2 class="cta-title">Start Closing More Sales<br/><span class="gradient-text">Today</span></h2>
+      <p class="cta-sub">Join 2,400+ businesses already using Sellaris AI to automate sales and delight customers 24/7.</p>
+      <div class="cta-buttons">
+        <a href="#" class="btn btn-primary">
+          🚀 Get Started with Sellaris AI
+        </a>
+        <a href="#demo" class="btn btn-ghost">
+          See it in action →
+        </a>
+      </div>
+      <p class="cta-note">No credit card required · Free 14-day trial · Cancel anytime</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========================
+     FOOTER
+========================= -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <div class="logo-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M9 2L15.5 5.5V12.5L9 16L2.5 12.5V5.5L9 2Z" stroke="white" stroke-width="1.5" fill="none"/>
+              <circle cx="9" cy="9" r="2.5" fill="white"/>
+            </svg>
+          </div>
+          Sellaris AI
+        </a>
+        <p>AI-powered sales and customer support that helps businesses reply instantly and convert conversations into revenue — automatically.</p>
+        <div class="footer-social">
+          <div class="social-btn" title="Twitter/X">𝕏</div>
+          <div class="social-btn" title="LinkedIn">in</div>
+          <div class="social-btn" title="Instagram">📸</div>
+          <div class="social-btn" title="WhatsApp">💬</div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Integrations</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Changelog</a></li>
+          <li><a href="#">Roadmap</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">API Reference</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="#">Status</a></li>
+          <li><a href="#">Support</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2025 Sellaris AI, Inc. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Settings</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ========================
+     FLOATING CHAT WIDGET
+========================= -->
+<div class="chat-widget" id="chatWidget">
+  <div class="chat-panel" id="chatPanel">
+    <div class="widget-header">
+      <div class="widget-header-info">
+        <div class="widget-avatar">🤖</div>
+        <div>
+          <div class="widget-name">Sellaris AI</div>
+          <div class="widget-status">● Online · Avg reply &lt;2s</div>
+        </div>
+      </div>
+      <button class="widget-close" id="widgetClose">✕</button>
+    </div>
+    <div class="widget-messages" id="widgetMessages">
+      <div class="w-msg">
+        <div class="w-msg-avatar">🤖</div>
+        <div class="w-msg-bubble">👋 Hi! I'm Sellaris AI. Ask me anything about our product — I'm here to help you close more sales!</div>
+      </div>
+    </div>
+    <div class="widget-input-area">
+      <input type="text" class="widget-input" id="widgetInput" placeholder="Type a message..." />
+      <button class="widget-send" id="widgetSendBtn">➤</button>
+    </div>
+  </div>
+  <div class="chat-bubble" id="chatBubble">💬</div>
+</div>
+ 
+<script src="static/js/index.js"></script>
+ 
+</script>
+</body>
+</html>
