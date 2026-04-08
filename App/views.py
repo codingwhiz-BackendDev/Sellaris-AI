@@ -7,6 +7,10 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django_ratelimit.decorators import ratelimit
 from .tokens import email_verification_token, password_reset_token
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+import json
+from django.http import JsonResponse 
 
 # Create your views here.
 def index(request):
@@ -144,7 +148,7 @@ def verify_email(request, uidb64, token):
 def login(request):
     # Already authenticated — skip the login page
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('onboarding')
  
     if request.method == 'POST':
         email    = request.POST.get('email', '').strip().lower()
@@ -288,3 +292,39 @@ def reset_password(request, uidb64, token):
         })
 
     return render(request, "reset_password.html")        
+
+
+@login_required(login_url='login')
+def onboarding(request):
+    return render(request, "onboarding.html")
+
+
+@login_required(login_url='login')
+@require_POST
+def save_onboarding_step(request):
+    step = request.POST.get('step')
+    
+    # Store progress in session so it persists
+    if 'onboarding_data' not in request.session:
+        request.session['onboarding_data'] = {}
+    
+    # Save this step's data into the session
+    step_data = {k: v for k, v in request.POST.items() if k != 'csrfmiddlewaretoken'}
+    request.session['onboarding_data'][f'step_{step}'] = step_data
+    request.session.modified = True  # tell Django the session changed
+
+    return JsonResponse({'success': True, 'step': step})
+
+
+@login_required(login_url='login')
+@require_POST  
+def complete_onboarding(request):
+    # Mark onboarding as done on the user's profile
+    # Adjust this to match whatever profile model you have
+    # request.user.profile.onboarding_complete = True
+    # request.user.profile.save()
+    
+    # Clear the session data
+    request.session.pop('onboarding_data', None)
+    
+    return JsonResponse({'success': True})

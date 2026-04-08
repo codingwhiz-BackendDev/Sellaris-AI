@@ -144,7 +144,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'onboarding'
 LOGOUT_REDIRECT_URL = 'login'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
@@ -155,8 +155,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 
 
 
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_URL = 'login' 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
