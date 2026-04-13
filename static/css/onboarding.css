@@ -1,6 +1,7 @@
 /* ============================================================
    SELLARIS AI — ONBOARDING FLOW  |  onboarding.css
-   Matches the Sellaris AI landing page design system.
+   Upgraded: Business type selector, AI Brain, dynamic step 4
+   panels, channel cards, document uploads, data cards
    Fonts: Syne (display) + DM Sans (body)
    ============================================================ */
 
@@ -479,6 +480,10 @@ button {
     grid-template-columns: 1fr 1fr 1fr;
 }
 
+.ob-row--4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
 .ob-field {
     display: flex;
     flex-direction: column;
@@ -587,6 +592,16 @@ button {
     line-height: 1.4;
 }
 
+.ob-hint-inline {
+    font-size: 0.72rem;
+    color: var(--text3);
+    font-family: var(--font-b);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: 8px;
+}
+
 .ob-err {
     font-size: 0.77rem;
     color: var(--red);
@@ -619,7 +634,599 @@ button {
     color: var(--violet);
 }
 
-/* ── UPLOAD ZONE ── */
+
+/* ══════════════════════════════════════════════════════════
+   STEP 0 — BUSINESS TYPE SELECTOR  (NEW)
+══════════════════════════════════════════════════════════ */
+.ob-card--type {
+    padding-bottom: 44px;
+}
+
+.ob-type-err {
+    padding: 10px 16px;
+    background: rgba(248, 113, 113, 0.07);
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    border-radius: var(--radius);
+    color: var(--red);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.ob-type-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+
+.ob-type-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 22px 12px 18px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: var(--tr);
+    text-align: center;
+    overflow: hidden;
+}
+
+.ob-type-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ob-type-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(79, 127, 255, 0.07), rgba(124, 58, 237, 0.05));
+    opacity: 0;
+    transition: var(--tr);
+}
+
+.ob-type-card:hover {
+    border-color: rgba(79, 127, 255, 0.35);
+    background: rgba(79, 127, 255, 0.05);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(79, 127, 255, 0.1);
+}
+
+.ob-type-card:hover::before {
+    opacity: 1;
+}
+
+.ob-type-card.is-selected {
+    background: rgba(79, 127, 255, 0.1);
+    border-color: rgba(79, 127, 255, 0.55);
+    box-shadow: 0 0 24px rgba(79, 127, 255, 0.18), 0 8px 32px rgba(0, 0, 0, 0.35);
+    transform: translateY(-3px);
+}
+
+.ob-type-card.is-selected::before {
+    opacity: 1;
+}
+
+.ob-type-icon {
+    font-size: 28px;
+    line-height: 1;
+    display: block;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ob-type-card:hover .ob-type-icon,
+.ob-type-card.is-selected .ob-type-icon {
+    transform: scale(1.15);
+}
+
+.ob-type-label {
+    font-family: var(--font-d);
+    font-weight: 700;
+    font-size: 0.78rem;
+    color: var(--text2);
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+    transition: color var(--tr);
+}
+
+.ob-type-card:hover .ob-type-label {
+    color: var(--text);
+}
+
+.ob-type-card.is-selected .ob-type-label {
+    color: var(--primary);
+}
+
+.ob-type-desc {
+    font-size: 0.68rem;
+    color: var(--text3);
+    line-height: 1.4;
+    position: relative;
+    z-index: 1;
+}
+
+.ob-type-check {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    width: 20px;
+    height: 20px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    opacity: 0;
+    transform: scale(0.4);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ob-type-card.is-selected .ob-type-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   STEP 2 — CHANNEL CARDS  (UPGRADED)
+══════════════════════════════════════════════════════════ */
+.ob-channels-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.ob-channel-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--tr);
+}
+
+.ob-channel-card:hover {
+    border-color: var(--border2);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.ob-channel-card.is-connected {
+    border-color: rgba(52, 211, 153, 0.3) !important;
+    background: rgba(52, 211, 153, 0.03) !important;
+}
+
+.ob-channel-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+}
+
+.ob-channel-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.ob-channel-info {
+    flex: 1;
+}
+
+.ob-channel-name {
+    font-family: var(--font-d);
+    font-weight: 700;
+    font-size: 0.93rem;
+    margin-bottom: 4px;
+}
+
+.ob-channel-badge {
+    font-size: 0.7rem;
+    color: var(--text3);
+    font-weight: 500;
+}
+
+.ob-channel-badge--popular {
+    color: var(--amber);
+}
+
+.ob-channel-desc {
+    font-size: 0.8rem;
+    color: var(--text3);
+    line-height: 1.55;
+    padding: 0 20px 16px 80px;
+}
+
+.ob-channel-status {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.ob-channel-err {
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    background: rgba(248, 113, 113, 0.07);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+    border-radius: var(--radius);
+    font-size: 0.82rem;
+    color: var(--red);
+}
+
+/* Channel connect/disconnect buttons (injected by JS) */
+.ch-loading {
+    font-size: 0.78rem;
+    color: var(--text3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ch-connected-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ch-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-family: var(--font-d);
+    font-weight: 700;
+    font-size: 0.8rem;
+    border: none;
+    cursor: pointer;
+    transition: var(--tr);
+    white-space: nowrap;
+}
+
+.ch-btn--connect {
+    background: linear-gradient(135deg, #4F7FFF, #7C3AED);
+    color: #fff;
+    box-shadow: 0 0 18px rgba(79, 127, 255, 0.3);
+}
+
+.ch-btn--connect:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 0 28px rgba(79, 127, 255, 0.5);
+}
+
+.ch-btn--disconnect {
+    background: transparent;
+    color: var(--red);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.ch-btn--disconnect:hover {
+    background: rgba(248, 113, 113, 0.1);
+}
+
+.ch-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-family: var(--font-d);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.ch-badge--connected {
+    background: rgba(52, 211, 153, 0.12);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    color: var(--green);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   STEP 3 — AI BRAIN  (NEW SECTIONS)
+══════════════════════════════════════════════════════════ */
+
+/* Document upload grid */
+.ob-docs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.ob-upload--compact .ob-upload__inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 18px 12px;
+    gap: 8px;
+}
+
+.ob-upload--compact .ob-upload__icon {
+    font-size: 22px;
+}
+
+.ob-upload--compact .ob-upload__text {
+    font-size: 0.75rem;
+}
+
+.ob-upload--compact .ob-upload__text strong {
+    display: block;
+    font-size: 0.77rem;
+}
+
+/* Tone options */
+.ob-tone-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.ob-tone-opt {
+    position: relative;
+}
+
+.ob-tone-opt input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ob-tone-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 12px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--tr);
+    text-align: center;
+}
+
+.ob-tone-card:hover {
+    border-color: var(--border2);
+    background: var(--surface2);
+}
+
+.ob-tone-opt input:checked+.ob-tone-card {
+    background: rgba(79, 127, 255, 0.1);
+    border-color: rgba(79, 127, 255, 0.45);
+    box-shadow: 0 0 12px rgba(79, 127, 255, 0.12);
+}
+
+.ob-tone-icon {
+    font-size: 22px;
+}
+
+.ob-tone-label {
+    font-family: var(--font-d);
+    font-weight: 700;
+    font-size: 0.82rem;
+}
+
+.ob-tone-desc {
+    font-size: 0.7rem;
+    color: var(--text3);
+    line-height: 1.35;
+}
+
+/* FAQ list */
+.ob-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.ob-faq-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: stepEnter 0.3s ease both;
+}
+
+.ob-faq-remove {
+    align-self: flex-end;
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+    color: var(--red);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    transition: var(--tr);
+}
+
+.ob-faq-remove:hover {
+    background: rgba(248, 113, 113, 0.2);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   STEP 4 — DYNAMIC PANELS  (NEW)
+══════════════════════════════════════════════════════════ */
+
+/* Panel base — all hidden by default, JS shows the right one */
+.ob-step4-panel {
+    display: none;
+}
+
+/* Data cards — shared wrapper for all list items */
+.ob-data-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    animation: stepEnter 0.3s ease both;
+    position: relative;
+}
+
+.ob-data-card+.ob-data-card {
+    margin-top: 12px;
+}
+
+/* Generic remove button used across all dynamic lists */
+.ob-remove-btn {
+    align-self: flex-start;
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.18);
+    color: var(--red);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.77rem;
+    font-family: var(--font-d);
+    font-weight: 600;
+    transition: var(--tr);
+}
+
+.ob-remove-btn:hover {
+    background: rgba(248, 113, 113, 0.18);
+}
+
+/* Shared list wrapper */
+.ob-list-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 14px;
+}
+
+/* ── E-commerce ── */
+.ob-catalog-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ob-catalog-opt {
+    position: relative;
+}
+
+.ob-catalog-opt input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ob-catalog-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 10px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--tr);
+    font-family: var(--font-d);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text2);
+}
+
+.ob-catalog-card:hover {
+    border-color: var(--border2);
+    color: var(--text);
+}
+
+.ob-catalog-opt input:checked+.ob-catalog-card {
+    background: rgba(79, 127, 255, 0.1);
+    border-color: rgba(79, 127, 255, 0.45);
+    color: var(--primary);
+}
+
+.ob-catalog-icon {
+    font-size: 22px;
+}
+
+.ob-products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.ob-product-item {
+    /* uses .ob-data-card */
+}
+
+.ob-product-remove {
+    /* uses .ob-remove-btn */
+}
+
+/* ── School ── */
+.ob-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.ob-cal-term {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ob-cal-label {
+    font-family: var(--font-d);
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ── Toggle inline variant ── */
+.ob-toggle--inline {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.ob-toggle__label {
+    font-size: 0.85rem;
+    color: var(--text2);
+    font-weight: 500;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   UPLOAD ZONE  (existing + compact variant)
+══════════════════════════════════════════════════════════ */
 .ob-upload {
     border: 1.5px dashed var(--border2);
     border-radius: var(--radius-lg);
@@ -686,7 +1293,20 @@ button {
     border-top: 1px solid rgba(52, 211, 153, 0.15);
 }
 
-/* ── TOGGLE ── */
+.ob-upload-remove {
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+    line-height: 1;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   TOGGLE  (base)
+══════════════════════════════════════════════════════════ */
 .ob-toggle {
     position: relative;
     display: inline-block;
@@ -735,263 +1355,10 @@ button {
     box-shadow: 0 0 8px rgba(79, 127, 255, 0.5);
 }
 
-/* ── CHANNEL CARDS ── */
-.ob-channels-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
 
-.ob-channel-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    transition: var(--tr);
-}
-
-.ob-channel-card:has(.ob-channel-toggle:checked) {
-    border-color: rgba(79, 127, 255, 0.35);
-    background: rgba(79, 127, 255, 0.04);
-}
-
-.ob-channel-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 20px;
-    cursor: pointer;
-}
-
-.ob-channel-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-}
-
-.ob-channel-name {
-    font-family: var(--font-d);
-    font-weight: 700;
-    font-size: 0.93rem;
-    margin-bottom: 3px;
-}
-
-.ob-channel-badge {
-    font-size: 0.7rem;
-    color: var(--text3);
-    font-weight: 500;
-}
-
-.ob-channel-badge--popular {
-    color: var(--amber);
-}
-
-.ob-channel-header .ob-toggle {
-    margin-left: auto;
-}
-
-.ob-channel-fields {
-    display: none;
-    flex-direction: column;
-    gap: 14px;
-    padding: 0 20px 20px;
-    animation: stepEnter 0.3s ease both;
-}
-
-.ob-channel-fields.is-open {
-    display: flex;
-}
-
-.ob-channel-err {
-    margin-top: -8px;
-    padding: 10px 14px;
-    background: rgba(248, 113, 113, 0.07);
-    border: 1px solid rgba(248, 113, 113, 0.2);
-    border-radius: var(--radius);
-    font-size: 0.82rem;
-    color: var(--red);
-}
-
-/* ── TONE OPTIONS ── */
-.ob-tone-options {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-}
-
-.ob-tone-opt input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.ob-tone-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    padding: 16px 12px;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: var(--tr);
-    text-align: center;
-}
-
-.ob-tone-card:hover {
-    border-color: var(--border2);
-    background: var(--surface2);
-}
-
-.ob-tone-opt input:checked+.ob-tone-card {
-    background: rgba(79, 127, 255, 0.1);
-    border-color: rgba(79, 127, 255, 0.45);
-    box-shadow: 0 0 12px rgba(79, 127, 255, 0.12);
-}
-
-.ob-tone-icon {
-    font-size: 22px;
-}
-
-.ob-tone-label {
-    font-family: var(--font-d);
-    font-weight: 700;
-    font-size: 0.82rem;
-}
-
-.ob-tone-desc {
-    font-size: 0.7rem;
-    color: var(--text3);
-    line-height: 1.35;
-}
-
-/* ── FAQ LIST ── */
-.ob-faq-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-bottom: 12px;
-}
-
-.ob-faq-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    position: relative;
-    animation: stepEnter 0.3s ease both;
-}
-
-.ob-faq-remove {
-    align-self: flex-end;
-    background: rgba(248, 113, 113, 0.1);
-    border: 1px solid rgba(248, 113, 113, 0.2);
-    color: var(--red);
-    border-radius: 8px;
-    padding: 4px 10px;
-    font-size: 0.75rem;
-    transition: var(--tr);
-}
-
-.ob-faq-remove:hover {
-    background: rgba(248, 113, 113, 0.2);
-}
-
-/* ── CATALOG OPTIONS ── */
-.ob-catalog-options {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.ob-catalog-opt input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.ob-catalog-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 16px 10px;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: var(--tr);
-    font-family: var(--font-d);
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-align: center;
-    color: var(--text2);
-}
-
-.ob-catalog-card:hover {
-    border-color: var(--border2);
-    color: var(--text);
-}
-
-.ob-catalog-opt input:checked+.ob-catalog-card {
-    background: rgba(79, 127, 255, 0.1);
-    border-color: rgba(79, 127, 255, 0.45);
-    color: var(--primary);
-}
-
-.ob-catalog-icon {
-    font-size: 22px;
-}
-
-/* ── PRODUCTS LIST ── */
-.ob-products-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 14px;
-}
-
-.ob-product-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    animation: stepEnter 0.3s ease both;
-}
-
-.ob-product-remove {
-    align-self: flex-start;
-    background: rgba(248, 113, 113, 0.1);
-    border: 1px solid rgba(248, 113, 113, 0.2);
-    color: var(--red);
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: 0.78rem;
-    font-family: var(--font-d);
-    font-weight: 600;
-    transition: var(--tr);
-}
-
-.ob-product-remove:hover {
-    background: rgba(248, 113, 113, 0.18);
-}
-
-/* ── TEAM MEMBERS ── */
+/* ══════════════════════════════════════════════════════════
+   STEP 5 — TEAM & NOTIFICATIONS
+══════════════════════════════════════════════════════════ */
 .ob-team-list {
     display: flex;
     flex-direction: column;
@@ -1007,11 +1374,6 @@ button {
     animation: stepEnter 0.3s ease both;
 }
 
-.ob-team-remove {
-    align-self: center !important;
-}
-
-/* ── NOTIFICATIONS GRID ── */
 .ob-notif-grid {
     display: flex;
     flex-direction: column;
@@ -1046,7 +1408,10 @@ button {
     color: var(--text3);
 }
 
-/* ── REVIEW SECTION (STEP 6) ── */
+
+/* ══════════════════════════════════════════════════════════
+   STEP 6 — REVIEW & GO LIVE
+══════════════════════════════════════════════════════════ */
 .ob-review {
     display: flex;
     flex-direction: column;
@@ -1122,7 +1487,6 @@ button {
     font-weight: 500;
 }
 
-/* ── GO LIVE CHECKLIST ── */
 .ob-golive-box {
     background: rgba(52, 211, 153, 0.05);
     border: 1px solid rgba(52, 211, 153, 0.2);
@@ -1167,7 +1531,6 @@ button {
     color: var(--red);
 }
 
-/* ── CHECKBOX ── */
 .ob-checkbox-label {
     display: flex;
     align-items: flex-start;
@@ -1187,7 +1550,10 @@ button {
     cursor: pointer;
 }
 
-/* ── BUTTONS ── */
+
+/* ══════════════════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════════════════ */
 .ob-btn-primary,
 .ob-btn-ghost {
     display: inline-flex;
@@ -1252,6 +1618,7 @@ button {
     font-size: 1rem;
 }
 
+
 /* ── NAV ACTIONS BAR ── */
 .ob-nav-actions {
     position: sticky;
@@ -1275,6 +1642,7 @@ button {
     justify-content: center;
 }
 
+
 /* ── SAVE STATUS ── */
 .ob-save-status {
     font-size: 0.78rem;
@@ -1297,7 +1665,6 @@ button {
     color: var(--red);
 }
 
-/* Spinner */
 .ob-spinner {
     width: 14px;
     height: 14px;
@@ -1313,6 +1680,7 @@ button {
         transform: rotate(360deg);
     }
 }
+
 
 /* ── SUCCESS OVERLAY ── */
 .ob-success-overlay {
@@ -1403,19 +1771,94 @@ button {
     font-weight: 300;
 }
 
-/* ── RESPONSIVE ── */
+/* Telegram modal */
+.tg-modal-inner {
+    background: #0f1628;
+    border: 1px solid rgba(79, 127, 255, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+
+.tg-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text2);
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Toast */
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+    .ob-type-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .ob-docs-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ob-row--4 {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .ob-cal-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .ob-type-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 @media (max-width: 640px) {
     .ob-card {
         padding: 24px 20px;
     }
 
     .ob-row--2,
-    .ob-row--3 {
+    .ob-row--3,
+    .ob-row--4 {
         grid-template-columns: 1fr;
     }
 
     .ob-tone-options,
     .ob-catalog-options {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .ob-type-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ob-docs-grid {
         grid-template-columns: 1fr 1fr;
     }
 
@@ -1444,6 +1887,24 @@ button {
     .ob-main {
         padding: 24px 16px 80px;
     }
+
+    .ob-channel-desc {
+        padding-left: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ob-type-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ob-docs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ob-cal-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 400px) {
@@ -1451,5 +1912,9 @@ button {
     .ob-tone-options,
     .ob-catalog-options {
         grid-template-columns: 1fr;
+    }
+
+    .ob-type-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

@@ -15,13 +15,10 @@
 </head>
 
 <body>
-
-  <!-- Background orbs -->
   <div class="orb orb-1" aria-hidden="true"></div>
   <div class="orb orb-2" aria-hidden="true"></div>
   <div class="orb orb-3" aria-hidden="true"></div>
 
-  <!-- ── TOP NAV ── -->
   <header class="ob-nav">
     <div class="ob-nav__inner">
       <a href="/" class="ob-logo" aria-label="Sellaris AI Home">
@@ -42,20 +39,17 @@
 
   <main class="ob-main" id="onboardingApp">
 
-    <!-- ── PROGRESS TRACKER ── -->
     <div class="ob-progress-wrap" aria-label="Onboarding progress">
       <div class="ob-progress-header">
-        <span class="ob-progress-label" id="progressLabel">Step 1 of 6</span>
+        <span class="ob-progress-label" id="progressLabel">Step 1 of 7</span>
         <span class="ob-progress-pct" id="progressPct">0%</span>
       </div>
       <div class="ob-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
         <div class="ob-progress-fill" id="progressFill"></div>
       </div>
-
-      <!-- Step pills -->
       <nav class="ob-steps-nav" aria-label="Steps">
         {% for step in steps %}
-        <button class="ob-step-pill{% if forloop.first %} is-active{% endif %}" data-step="{{ forloop.counter }}"
+        <button class="ob-step-pill{% if forloop.first %} is-active{% endif %}" data-step="{{ forloop.counter0 }}"
           aria-current="{% if forloop.first %}step{% else %}false{% endif %}"
           aria-label="Step {{ forloop.counter }}: {{ step.label }}" type="button">
           <span class="ob-step-pill__num">{{ forloop.counter }}</span>
@@ -67,19 +61,102 @@
           </span>
           <span class="ob-step-pill__label">{{ step.label }}</span>
         </button>
-        {% empty %}
-        <!-- Fallback pills rendered by JS if template context unavailable -->
         {% endfor %}
       </nav>
     </div>
 
-    <!-- ── STEP CARDS CONTAINER ── -->
     <div class="ob-steps-container">
 
-      <!-- ══════════════════════════════════════
-           STEP 1 — Business Profile
-      ══════════════════════════════════════ -->
-      <section class="ob-step is-active" id="step-1" data-step="1" aria-labelledby="step1-title">
+      <!-- STEP 0: Business Type -->
+      <section class="ob-step is-active" id="step-0" data-step="0" aria-labelledby="step0-title">
+        <div class="ob-card ob-card--type">
+          <div class="ob-card__icon-wrap">
+            <div class="ob-card__icon" style="--icon-color: rgba(79,127,255,0.18);">🏗️</div>
+          </div>
+          <div class="ob-card__head">
+            <h1 class="ob-card__title" id="step0-title">What type of business are you?</h1>
+            <p class="ob-card__sub">This personalises your entire setup and makes your AI smarter from day one.</p>
+          </div>
+          <p id="type-err" class="ob-type-err" style="display:none;" role="alert">Please select your business type to
+            continue.</p>
+          <div class="ob-type-grid">
+            <label class="ob-type-card"><input type="radio" name="business_type" value="ecommerce" /><span
+                class="ob-type-icon">🛒</span><span class="ob-type-label">E-commerce</span><span
+                class="ob-type-desc">Online store, products &amp; sales</span><span class="ob-type-check"><svg
+                  width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg></span></label>
+            <label class="ob-type-card"><input type="radio" name="business_type" value="school" /><span
+                class="ob-type-icon">🏫</span><span class="ob-type-label">School / Education</span><span
+                class="ob-type-desc">Academic institution, classes &amp; fees</span><span class="ob-type-check"><svg
+                  width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg></span></label>
+            <label class="ob-type-card"><input type="radio" name="business_type" value="clinic" /><span
+                class="ob-type-icon">🏥</span><span class="ob-type-label">Clinic / Hospital</span><span
+                class="ob-type-desc">Healthcare, doctors &amp; appointments</span><span class="ob-type-check"><svg
+                  width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg></span></label>
+            <label class="ob-type-card"><input type="radio" name="business_type" value="service" /><span
+                class="ob-type-icon">💼</span><span class="ob-type-label">Service Business</span><span
+                class="ob-type-desc">Barber, agency, freelancer &amp; more</span><span class="ob-type-check"><svg
+                  width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg></span></label>
+            <label class="ob-type-card"><input type="radio" name="business_type" value="hotel" /><span
+                class="ob-type-icon">🏨</span><span class="ob-type-label">Hotel / Hospitality</span><span
+                class="ob-type-desc">Rooms, amenities &amp; bookings</span><span class="ob-type-check"><svg width="14"
+                  height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg></span></label>
+            <label class="ob-type-card"><input type="radio" name="business_type" value="restaurant" /><span
+                class="ob-type-icon">🍔</span><span class="ob-type-label">Restaurant / Food</span><span
+                class="ob-type-desc">Menu, delivery &amp; kitchen ops</span><span class="ob-type-check"><svg width="14"
+                  height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg></span></label>
+            <label class="ob-type-card"><input type="radio" name="business_type" value="finance" /><span
+                class="ob-type-icon">🏦</span><span class="ob-type-label">Finance / Fintech</span><span
+                class="ob-type-desc">Financial services &amp; products</span><span class="ob-type-check"><svg width="14"
+                  height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg></span></label>
+            <label class="ob-type-card"><input type="radio" name="business_type" value="corporate" /><span
+                class="ob-type-icon">🏢</span><span class="ob-type-label">Corporate / Company</span><span
+                class="ob-type-desc">B2B, enterprise &amp; organisations</span><span class="ob-type-check"><svg
+                  width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg></span></label>
+            <label class="ob-type-card"><input type="radio" name="business_type" value="coaching" /><span
+                class="ob-type-icon">🎓</span><span class="ob-type-label">Coaching / Courses</span><span
+                class="ob-type-desc">Training, courses &amp; mentorship</span><span class="ob-type-check"><svg
+                  width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg></span></label>
+            <label class="ob-type-card"><input type="radio" name="business_type" value="other" /><span
+                class="ob-type-icon">🔧</span><span class="ob-type-label">Other</span><span
+                class="ob-type-desc">Something else entirely</span><span class="ob-type-check"><svg width="14"
+                  height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7l3.5 3.5L12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg></span></label>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- STEP 1: Business Profile -->
+      <section class="ob-step" id="step-1" data-step="1" aria-labelledby="step1-title">
         <div class="ob-card">
           <div class="ob-card__icon-wrap">
             <div class="ob-card__icon" style="--icon-color: rgba(79,127,255,0.18);">🏢</div>
@@ -88,11 +165,9 @@
             <h1 class="ob-card__title" id="step1-title">Business Profile</h1>
             <p class="ob-card__sub">Tell us about your business so we can personalise your AI agent.</p>
           </div>
-
           <form class="ob-form" id="form-step-1" novalidate enctype="multipart/form-data">
             {% csrf_token %}
             <input type="hidden" name="step" value="1" />
-
             <div class="ob-row ob-row--2">
               <div class="ob-field">
                 <label class="ob-label" for="biz-name">Business Name <span class="ob-req">*</span></label>
@@ -110,8 +185,11 @@
                     <option value="beauty">Beauty &amp; Cosmetics</option>
                     <option value="food">Food &amp; Beverage</option>
                     <option value="health">Health &amp; Wellness</option>
+                    <option value="education">Education</option>
                     <option value="real_estate">Real Estate</option>
+                    <option value="hospitality">Hospitality</option>
                     <option value="auto">Automotive</option>
+                    <option value="finance">Finance</option>
                     <option value="services">Professional Services</option>
                     <option value="other">Other</option>
                   </select>
@@ -120,7 +198,6 @@
                 <span class="ob-err" role="alert"></span>
               </div>
             </div>
-
             <div class="ob-row ob-row--2">
               <div class="ob-field">
                 <label class="ob-label" for="biz-email">Business Email <span class="ob-req">*</span></label>
@@ -135,21 +212,18 @@
                 <span class="ob-err" role="alert"></span>
               </div>
             </div>
-
             <div class="ob-field">
               <label class="ob-label" for="biz-website">Website URL</label>
               <input class="ob-input" type="url" id="biz-website" name="website" placeholder="https://yourbusiness.com"
                 autocomplete="url" />
               <span class="ob-err" role="alert"></span>
             </div>
-
             <div class="ob-field">
               <label class="ob-label" for="biz-desc">Short Business Description <span class="ob-req">*</span></label>
               <textarea class="ob-input ob-textarea" id="biz-desc" name="description"
                 placeholder="Briefly describe what your business sells or offers…" rows="3" required></textarea>
               <span class="ob-err" role="alert"></span>
             </div>
-
             <div class="ob-field">
               <label class="ob-label">Business Logo</label>
               <div class="ob-upload" id="logoUploadArea">
@@ -157,10 +231,8 @@
                   aria-label="Upload business logo" />
                 <div class="ob-upload__inner">
                   <div class="ob-upload__icon">🖼️</div>
-                  <div class="ob-upload__text">
-                    <strong>Click to upload</strong> or drag and drop<br />
-                    <span>PNG, JPG, SVG · Max 2MB</span>
-                  </div>
+                  <div class="ob-upload__text"><strong>Click to upload</strong> or drag and drop<br /><span>PNG, JPG,
+                      SVG · Max 2MB</span></div>
                 </div>
                 <div class="ob-upload__preview" id="logoPreview" hidden></div>
               </div>
@@ -169,449 +241,666 @@
         </div>
       </section>
 
-      <!-- ══════════════════════════════════════
-           STEP 2 — Messaging Channels
-      ══════════════════════════════════════ -->
-      <div class="ob-channels-grid">
-        <!-- STEP 2 — Messaging Channels -->
-        <section class="ob-step" id="step-2" data-step="2" aria-labelledby="step2-title">
-          <div class="ob-card">
-            <div class="ob-card__icon-wrap">
-              <div class="ob-card__icon" style="--icon-color: rgba(37,211,102,0.12);">💬</div>
+
+      <!-- STEP 2: Messaging Channels -->
+      <section class="ob-step" id="step-2" data-step="2" aria-labelledby="step2-title">
+        <div class="ob-card">
+          <div class="ob-card__icon-wrap">
+            <div class="ob-card__icon" style="--icon-color: rgba(37,211,102,0.12);">📡</div>
+          </div>
+          <div class="ob-card__head">
+            <h2 class="ob-card__title" id="step2-title">Messaging Channels</h2>
+            <p class="ob-card__sub">Connect the platforms where your AI agent will talk to customers. Connect at least
+              one.</p>
+          </div>
+          <p id="channel-err" class="ob-channel-err" style="display:none;" role="alert">⚠️ Please connect at least one
+            channel to continue.</p>
+          <div class="ob-channels-grid">
+            <div class="ob-channel-card" data-channel="whatsapp" id="card-whatsapp">
+              <div class="ob-channel-header">
+                <div class="ob-channel-icon" style="background:rgba(37,211,102,0.15);color:#25D366;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                  </svg>
+                </div>
+                <div class="ob-channel-info">
+                  <div class="ob-channel-name">WhatsApp Business</div>
+                  <div class="ob-channel-badge ob-channel-badge--popular">⚡ Most Popular</div>
+                </div>
+                <div class="ob-channel-status" id="status-whatsapp"></div>
+              </div>
+              <p class="ob-channel-desc">Reach customers on the world's most-used messaging app. Automate replies, send
+                order updates, and close sales 24/7.</p>
             </div>
-            <div class="ob-card__head">
-              <h2 class="ob-card__title" id="step2-title">Messaging Channels</h2>
-              <p class="ob-card__sub">Connect the platforms where your AI agent will talk to customers.</p>
+            <div class="ob-channel-card" data-channel="instagram" id="card-instagram">
+              <div class="ob-channel-header">
+                <div class="ob-channel-icon" style="background:rgba(225,48,108,0.15);color:#E1306C;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                  </svg>
+                </div>
+                <div class="ob-channel-info">
+                  <div class="ob-channel-name">Instagram DMs</div>
+                  <div class="ob-channel-badge">Business / Creator</div>
+                </div>
+                <div class="ob-channel-status" id="status-instagram"></div>
+              </div>
+              <p class="ob-channel-desc">Auto-reply to DMs and story mentions. Turn your followers into paying customers
+                without lifting a finger.</p>
             </div>
-
-            <p id="channel-err" style="display:none; color:#f87171; font-size:0.85rem;">
-              Please connect at least one channel to continue.
-            </p>
-
-            <div class="ob-channels-grid">
-
-              <!-- WhatsApp -->
-              <div class="ob-channel-card" data-channel="whatsapp" id="card-whatsapp">
-                <div class="ob-channel-header">
-                  <div class="ob-channel-icon" style="background:rgba(37,211,102,0.15);color:#25D366;">
-                    <!-- WhatsApp SVG icon -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">...</svg>
-                  </div>
-                  <div style="flex:1">
-                    <div class="ob-channel-name">WhatsApp Business</div>
-                    <div class="ob-channel-badge ob-channel-badge--popular">Most Popular</div>
-                  </div>
-                  <div class="ob-channel-status" id="status-whatsapp">
-                    <!-- Injected by JS: connected badge or Connect button -->
-                  </div>
+            <div class="ob-channel-card" data-channel="telegram" id="card-telegram">
+              <div class="ob-channel-header">
+                <div class="ob-channel-icon" style="background:rgba(0,136,204,0.15);color:#0088CC;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                  </svg>
                 </div>
-              </div>
-
-              <!-- Instagram -->
-              <div class="ob-channel-card" data-channel="instagram" id="card-instagram">
-                <div class="ob-channel-header">
-                  <div class="ob-channel-icon" style="background:rgba(225,48,108,0.15);color:#E1306C;">📸</div>
-                  <div style="flex:1">
-                    <div class="ob-channel-name">Instagram DMs</div>
-                    <div class="ob-channel-badge">Business / Creator</div>
-                  </div>
-                  <div class="ob-channel-status" id="status-instagram"></div>
+                <div class="ob-channel-info">
+                  <div class="ob-channel-name">Telegram</div>
+                  <div class="ob-channel-badge">Bot API</div>
                 </div>
+                <div class="ob-channel-status" id="status-telegram"></div>
               </div>
-
-              <!-- Telegram -->
-              <div class="ob-channel-card" data-channel="telegram" id="card-telegram">
-                <div class="ob-channel-header">
-                  <div class="ob-channel-icon" style="background:rgba(0,136,204,0.15);color:#0088CC;">✈️</div>
-                  <div style="flex:1">
-                    <div class="ob-channel-name">Telegram</div>
-                    <div class="ob-channel-badge">Bot API</div>
-                  </div>
-                  <div class="ob-channel-status" id="status-telegram"></div>
+              <p class="ob-channel-desc">Deploy a powerful Telegram bot that answers questions, processes orders and
+                handles inquiries instantly.</p>
+            </div>
+            <div class="ob-channel-card" data-channel="intercom" id="card-intercom">
+              <div class="ob-channel-header">
+                <div class="ob-channel-icon" style="background:rgba(73,108,255,0.15);color:#496CFF;">💬</div>
+                <div class="ob-channel-info">
+                  <div class="ob-channel-name">Intercom</div>
+                  <div class="ob-channel-badge">Live Chat Widget</div>
                 </div>
+                <div class="ob-channel-status" id="status-intercom"></div>
               </div>
-
-              <!-- Intercom -->
-              <div class="ob-channel-card" data-channel="intercom" id="card-intercom">
-                <div class="ob-channel-header">
-                  <div class="ob-channel-icon" style="background:rgba(73,108,255,0.15);color:#496CFF;">💬</div>
-                  <div style="flex:1">
-                    <div class="ob-channel-name">Intercom</div>
-                    <div class="ob-channel-badge">Live Chat Widget</div>
-                  </div>
-                  <div class="ob-channel-status" id="status-intercom"></div>
-                </div>
-              </div>
-
+              <p class="ob-channel-desc">Embed a live chat widget on your website powered by your AI agent. Handle
+                support and sales in real time.</p>
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
 
-
-      <!-- ══════════════════════════════════════
-           STEP 3 — AI / Chatbot Setup
-      ══════════════════════════════════════ -->
+      <!-- STEP 3: AI Brain -->
       <section class="ob-step" id="step-3" data-step="3" aria-labelledby="step3-title">
         <div class="ob-card">
           <div class="ob-card__icon-wrap">
             <div class="ob-card__icon" style="--icon-color: rgba(34,211,238,0.15);">🧠</div>
           </div>
           <div class="ob-card__head">
-            <h2 class="ob-card__title" id="step3-title">AI &amp; Chatbot Setup</h2>
-            <p class="ob-card__sub">Train your AI agent with FAQs and define how it should respond to customers.</p>
+            <h2 class="ob-card__title" id="step3-title">AI Brain Setup</h2>
+            <p class="ob-card__sub">Train your AI with documents, knowledge, and FAQs — the more you add, the smarter it
+              gets.</p>
           </div>
-
-          <form class="ob-form" id="form-step-3" novalidate>
+          <form class="ob-form" id="form-step-3" novalidate enctype="multipart/form-data">
             {% csrf_token %}
             <input type="hidden" name="step" value="3" />
 
-            <div class="ob-field">
-              <label class="ob-label" for="ai-name">AI Agent Name <span class="ob-req">*</span></label>
-              <input class="ob-input" type="text" id="ai-name" name="agent_name" placeholder="e.g. Aria, Max, Nova…"
-                required />
-              <span class="ob-hint">This is the name customers will see when chatting.</span>
-              <span class="ob-err" role="alert"></span>
+            <div class="ob-section-label">🤖 AI Personality</div>
+            <div class="ob-row ob-row--2">
+              <div class="ob-field">
+                <label class="ob-label" for="ai-name">Agent Name <span class="ob-req">*</span></label>
+                <input class="ob-input" type="text" id="ai-name" name="agent_name" placeholder="e.g. Aria, Max, Nova…"
+                  required />
+                <span class="ob-hint">The name customers see when chatting.</span>
+                <span class="ob-err" role="alert"></span>
+              </div>
             </div>
-
             <div class="ob-field">
-              <label class="ob-label" for="ai-tone">Response Tone &amp; Personality <span
-                  class="ob-req">*</span></label>
-              <div class="ob-tone-options" role="radiogroup" aria-labelledby="ai-tone">
-                <label class="ob-tone-opt">
-                  <input type="radio" name="tone" value="professional" required />
-                  <span class="ob-tone-card">
-                    <span class="ob-tone-icon">💼</span>
-                    <span class="ob-tone-label">Professional</span>
-                    <span class="ob-tone-desc">Formal, precise, business-like</span>
-                  </span>
-                </label>
-                <label class="ob-tone-opt">
-                  <input type="radio" name="tone" value="friendly" />
-                  <span class="ob-tone-card">
-                    <span class="ob-tone-icon">😊</span>
-                    <span class="ob-tone-label">Friendly</span>
-                    <span class="ob-tone-desc">Warm, conversational, approachable</span>
-                  </span>
-                </label>
-                <label class="ob-tone-opt">
-                  <input type="radio" name="tone" value="casual" />
-                  <span class="ob-tone-card">
-                    <span class="ob-tone-icon">🤙</span>
-                    <span class="ob-tone-label">Casual</span>
-                    <span class="ob-tone-desc">Relaxed, fun, emoji-friendly</span>
-                  </span>
-                </label>
-                <label class="ob-tone-opt">
-                  <input type="radio" name="tone" value="luxury" />
-                  <span class="ob-tone-card">
-                    <span class="ob-tone-icon">✨</span>
-                    <span class="ob-tone-label">Luxury</span>
-                    <span class="ob-tone-desc">Refined, elegant, premium feel</span>
-                  </span>
-                </label>
+              <label class="ob-label">Response Tone <span class="ob-req">*</span></label>
+              <div class="ob-tone-options" role="radiogroup" aria-label="Select tone">
+                <label class="ob-tone-opt"><input type="radio" name="tone" value="professional" required /><span
+                    class="ob-tone-card"><span class="ob-tone-icon">💼</span><span
+                      class="ob-tone-label">Professional</span><span class="ob-tone-desc">Formal &amp;
+                      precise</span></span></label>
+                <label class="ob-tone-opt"><input type="radio" name="tone" value="friendly" /><span
+                    class="ob-tone-card"><span class="ob-tone-icon">😊</span><span
+                      class="ob-tone-label">Friendly</span><span class="ob-tone-desc">Warm &amp;
+                      approachable</span></span></label>
+                <label class="ob-tone-opt"><input type="radio" name="tone" value="casual" /><span
+                    class="ob-tone-card"><span class="ob-tone-icon">🤙</span><span
+                      class="ob-tone-label">Casual</span><span class="ob-tone-desc">Relaxed &amp;
+                      fun</span></span></label>
+                <label class="ob-tone-opt"><input type="radio" name="tone" value="luxury" /><span
+                    class="ob-tone-card"><span class="ob-tone-icon">✨</span><span
+                      class="ob-tone-label">Luxury</span><span class="ob-tone-desc">Refined &amp;
+                      elegant</span></span></label>
               </div>
               <span class="ob-err" role="alert" id="tone-err"></span>
             </div>
-
             <div class="ob-field">
               <label class="ob-label" for="ai-greeting">Welcome Message <span class="ob-req">*</span></label>
               <textarea class="ob-input ob-textarea" id="ai-greeting" name="greeting" rows="3" required
-                placeholder="Hi! 👋 Welcome to [Business Name]. I'm your AI assistant. How can I help you today?"></textarea>
+                placeholder="Hi! 👋 Welcome to [Business Name]. I'm Aria, your AI assistant. How can I help?"></textarea>
               <span class="ob-err" role="alert"></span>
             </div>
 
-            <div class="ob-field">
-              <label class="ob-label">Upload FAQ Document</label>
-              <div class="ob-upload" id="faqUploadArea">
-                <input type="file" id="faq-doc" name="faq_document" accept=".pdf,.docx,.txt,.csv"
-                  class="ob-upload__input" aria-label="Upload FAQ document" />
-                <div class="ob-upload__inner">
-                  <div class="ob-upload__icon">📄</div>
-                  <div class="ob-upload__text">
-                    <strong>Click to upload your FAQ file</strong><br />
-                    <span>PDF, DOCX, TXT, CSV · Max 10MB</span>
+            <div class="ob-section-label" style="margin-top:32px;">📄 Upload Documents <span class="ob-hint-inline">Your
+                AI will learn from these files</span></div>
+            <div class="ob-docs-grid">
+              <div class="ob-field"><label class="ob-label">FAQ Document</label>
+                <div class="ob-upload ob-upload--compact" id="faqUploadArea"><input type="file" id="faq-doc"
+                    name="faq_document" accept=".pdf,.docx,.txt,.csv" class="ob-upload__input" />
+                  <div class="ob-upload__inner">
+                    <div class="ob-upload__icon">📋</div>
+                    <div class="ob-upload__text"><strong>FAQs</strong><br /><span>PDF, DOCX, TXT</span></div>
                   </div>
+                  <div class="ob-upload__preview" id="faqPreview" hidden></div>
                 </div>
-                <div class="ob-upload__preview" id="faqPreview" hidden></div>
               </div>
-              <span class="ob-hint">Don't have a file? Manually add FAQs below.</span>
+              <div class="ob-field"><label class="ob-label">Document 1</label>
+                <div class="ob-upload ob-upload--compact" id="aiDoc1Area"><input type="file" id="ai-doc-1" name="doc_1"
+                    accept=".pdf,.docx,.txt" class="ob-upload__input" />
+                  <div class="ob-upload__inner">
+                    <div class="ob-upload__icon">📄</div>
+                    <div class="ob-upload__text"><strong>Brochure / Policy</strong><br /><span>PDF, DOCX, TXT</span>
+                    </div>
+                  </div>
+                  <div class="ob-upload__preview" id="aiDoc1Preview" hidden></div>
+                </div>
+              </div>
+              <div class="ob-field"><label class="ob-label">Document 2</label>
+                <div class="ob-upload ob-upload--compact" id="aiDoc2Area"><input type="file" id="ai-doc-2" name="doc_2"
+                    accept=".pdf,.docx,.txt" class="ob-upload__input" />
+                  <div class="ob-upload__inner">
+                    <div class="ob-upload__icon">📄</div>
+                    <div class="ob-upload__text"><strong>Handbook / Guide</strong><br /><span>PDF, DOCX, TXT</span>
+                    </div>
+                  </div>
+                  <div class="ob-upload__preview" id="aiDoc2Preview" hidden></div>
+                </div>
+              </div>
+              <div class="ob-field"><label class="ob-label">Document 3</label>
+                <div class="ob-upload ob-upload--compact" id="aiDoc3Area"><input type="file" id="ai-doc-3" name="doc_3"
+                    accept=".pdf,.docx,.txt" class="ob-upload__input" />
+                  <div class="ob-upload__inner">
+                    <div class="ob-upload__icon">📄</div>
+                    <div class="ob-upload__text"><strong>Pricing / Terms</strong><br /><span>PDF, DOCX, TXT</span></div>
+                  </div>
+                  <div class="ob-upload__preview" id="aiDoc3Preview" hidden></div>
+                </div>
+              </div>
             </div>
 
+            <div class="ob-section-label" style="margin-top:32px;">🧠 Key Business Knowledge <span
+                class="ob-hint-inline">Your AI will always remember this</span></div>
             <div class="ob-field">
-              <label class="ob-label">Manual FAQ Entries</label>
-              <div class="ob-faq-list" id="faqList">
-                <div class="ob-faq-item">
-                  <input class="ob-input" type="text" name="faq_q[]"
-                    placeholder="Question: e.g. What are your opening hours?" />
-                  <textarea class="ob-input ob-textarea ob-textarea--sm" name="faq_a[]" rows="2"
-                    placeholder="Answer: We're open Mon–Sat 9am–6pm…"></textarea>
-                  <button type="button" class="ob-faq-remove" aria-label="Remove FAQ">✕</button>
-                </div>
-              </div>
-              <button type="button" class="ob-btn-ghost ob-btn-sm" id="addFaqBtn">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                  <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                </svg>
-                Add another FAQ
-              </button>
+              <label class="ob-label" for="ai-always-know">What should your AI ALWAYS know?</label>
+              <textarea class="ob-input ob-textarea" id="ai-always-know" name="always_know" rows="3"
+                placeholder="e.g. We are based in Lagos, Nigeria. We ship nationwide. Our return policy is 7 days. We accept bank transfer and card payments."></textarea>
+            </div>
+            <div class="ob-row ob-row--2">
+              <div class="ob-field"><label class="ob-label" for="ai-policies">Important Policies</label><textarea
+                  class="ob-input ob-textarea ob-textarea--sm" id="ai-policies" name="policies" rows="3"
+                  placeholder="e.g. No refunds on digital products. Delivery takes 2–5 business days."></textarea></div>
+              <div class="ob-field"><label class="ob-label" for="ai-pricing-rules">Pricing Rules</label><textarea
+                  class="ob-input ob-textarea ob-textarea--sm" id="ai-pricing-rules" name="pricing_rules" rows="3"
+                  placeholder="e.g. 10% discount for orders above ₦50,000. Students get 15% off."></textarea></div>
             </div>
 
+            <div class="ob-section-label" style="margin-top:32px;">❓ Manual FAQ Entries</div>
+            <div class="ob-faq-list" id="faqList">
+              <div class="ob-faq-item">
+                <input class="ob-input" type="text" name="faq_q[]"
+                  placeholder="Question: e.g. What are your opening hours?" />
+                <textarea class="ob-input ob-textarea ob-textarea--sm" name="faq_a[]" rows="2"
+                  placeholder="Answer: We're open Mon–Sat 9am–6pm…"></textarea>
+                <button type="button" class="ob-faq-remove" aria-label="Remove FAQ">✕</button>
+              </div>
+            </div>
+            <button type="button" class="ob-btn-ghost ob-btn-sm" id="addFaqBtn">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+              Add another FAQ
+            </button>
           </form>
         </div>
       </section>
 
-      <!-- ══════════════════════════════════════
-           STEP 4 — Product / Service Setup
-      ══════════════════════════════════════ -->
+
+      <!-- STEP 4: Dynamic Business Data -->
       <section class="ob-step" id="step-4" data-step="4" aria-labelledby="step4-title">
         <div class="ob-card">
           <div class="ob-card__icon-wrap">
-            <div class="ob-card__icon" style="--icon-color: rgba(251,191,36,0.12);">🛒</div>
+            <div class="ob-card__icon" style="--icon-color: rgba(251,191,36,0.12);">📊</div>
           </div>
           <div class="ob-card__head">
-            <h2 class="ob-card__title" id="step4-title">Products &amp; Services <span
+            <h2 class="ob-card__title" id="step4-heading">Your Business Data <span
                 class="ob-optional-badge">Optional</span></h2>
-            <p class="ob-card__sub">Add your catalogue so your AI can recommend and sell products automatically. You can
-              skip and import later.</p>
+            <p class="ob-card__sub">Add your data so your AI can answer questions accurately. You can skip and add
+              later.</p>
           </div>
-
-          <form class="ob-form" id="form-step-4" novalidate>
+          <form class="ob-form" id="form-step-4" novalidate enctype="multipart/form-data">
             {% csrf_token %}
             <input type="hidden" name="step" value="4" />
 
-            <div class="ob-catalog-options">
-              <label class="ob-catalog-opt">
-                <input type="radio" name="catalog_method" value="manual" checked />
-                <span class="ob-catalog-card">
-                  <span class="ob-catalog-icon">✏️</span>
-                  <span>Add manually</span>
-                </span>
-              </label>
-              <label class="ob-catalog-opt">
-                <input type="radio" name="catalog_method" value="csv" />
-                <span class="ob-catalog-card">
-                  <span class="ob-catalog-icon">📊</span>
-                  <span>Import CSV</span>
-                </span>
-              </label>
-              <label class="ob-catalog-opt">
-                <input type="radio" name="catalog_method" value="shopify" />
-                <span class="ob-catalog-card">
-                  <span class="ob-catalog-icon">🛍️</span>
-                  <span>Shopify Sync</span>
-                </span>
-              </label>
-              <label class="ob-catalog-opt">
-                <input type="radio" name="catalog_method" value="woo" />
-                <span class="ob-catalog-card">
-                  <span class="ob-catalog-icon">🛒</span>
-                  <span>WooCommerce</span>
-                </span>
-              </label>
-            </div>
-
-            <!-- Manual entry panel -->
-            <div id="catalog-manual">
-              <div class="ob-products-list" id="productsList">
-                <div class="ob-product-item">
-                  <div class="ob-row ob-row--3">
-                    <div class="ob-field">
-                      <label class="ob-label">Product/Service Name</label>
-                      <input class="ob-input" type="text" name="product_name[]" placeholder="e.g. Classic Sneakers" />
-                    </div>
-                    <div class="ob-field">
-                      <label class="ob-label">Price (USD)</label>
-                      <input class="ob-input" type="number" name="product_price[]" placeholder="99.00" min="0"
-                        step="0.01" />
-                    </div>
-                    <div class="ob-field">
-                      <label class="ob-label">Stock / Availability</label>
-                      <div class="ob-select-wrap">
-                        <select class="ob-input ob-select" name="product_stock[]">
-                          <option value="in_stock">In Stock</option>
-                          <option value="limited">Limited Stock</option>
-                          <option value="pre_order">Pre-order</option>
-                          <option value="out_of_stock">Out of Stock</option>
-                        </select>
-                        <span class="ob-select-arrow" aria-hidden="true">▾</span>
+            <!-- E-commerce -->
+            <div class="ob-step4-panel" id="panel-ecommerce">
+              <div class="ob-catalog-options">
+                <label class="ob-catalog-opt"><input type="radio" name="catalog_method" value="manual" checked /><span
+                    class="ob-catalog-card"><span class="ob-catalog-icon">✏️</span><span>Add
+                      manually</span></span></label>
+                <label class="ob-catalog-opt"><input type="radio" name="catalog_method" value="csv" /><span
+                    class="ob-catalog-card"><span class="ob-catalog-icon">📊</span><span>Import
+                      CSV</span></span></label>
+                <label class="ob-catalog-opt"><input type="radio" name="catalog_method" value="shopify" /><span
+                    class="ob-catalog-card"><span class="ob-catalog-icon">🛍️</span><span>Shopify</span></span></label>
+                <label class="ob-catalog-opt"><input type="radio" name="catalog_method" value="woo" /><span
+                    class="ob-catalog-card"><span
+                      class="ob-catalog-icon">🛒</span><span>WooCommerce</span></span></label>
+              </div>
+              <div id="catalog-manual">
+                <div class="ob-products-list" id="productsList">
+                  <div class="ob-product-item ob-data-card">
+                    <div class="ob-row ob-row--3">
+                      <div class="ob-field"><label class="ob-label">Product Name</label><input class="ob-input"
+                          type="text" name="product_name[]" placeholder="e.g. Classic Sneakers" /></div>
+                      <div class="ob-field"><label class="ob-label">Price (₦)</label><input class="ob-input"
+                          type="number" name="product_price[]" placeholder="9900" min="0" /></div>
+                      <div class="ob-field"><label class="ob-label">Stock</label>
+                        <div class="ob-select-wrap"><select class="ob-input ob-select" name="product_stock[]">
+                            <option value="in_stock">In Stock</option>
+                            <option value="limited">Limited</option>
+                            <option value="pre_order">Pre-order</option>
+                            <option value="out_of_stock">Out of Stock</option>
+                          </select><span class="ob-select-arrow">▾</span></div>
                       </div>
                     </div>
+                    <div class="ob-row ob-row--2">
+                      <div class="ob-field"><label class="ob-label">Description</label><input class="ob-input"
+                          type="text" name="product_desc[]" placeholder="Brief description…" /></div>
+                      <div class="ob-field"><label class="ob-label">Variants</label><input class="ob-input" type="text"
+                          name="product_variants[]" placeholder="e.g. Red, Blue, Size M, XL" /></div>
+                    </div>
+                    <button type="button" class="ob-product-remove ob-remove-btn">✕ Remove</button>
                   </div>
-                  <div class="ob-field">
-                    <label class="ob-label">Short Description</label>
-                    <input class="ob-input" type="text" name="product_desc[]"
-                      placeholder="Brief description customers will see…" />
+                </div>
+                <button type="button" class="ob-btn-ghost ob-btn-sm" id="addProductBtn"><svg width="14" height="14"
+                    viewBox="0 0 14 14" fill="none">
+                    <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  </svg> Add product</button>
+              </div>
+              <div id="catalog-csv" style="display:none">
+                <div class="ob-upload"><input type="file" name="catalog_csv" accept=".csv" class="ob-upload__input" />
+                  <div class="ob-upload__inner">
+                    <div class="ob-upload__icon">📊</div>
+                    <div class="ob-upload__text"><strong>Upload product CSV</strong><br /><span>Max 50MB</span></div>
                   </div>
-                  <button type="button" class="ob-product-remove" aria-label="Remove product">✕ Remove</button>
                 </div>
               </div>
-              <button type="button" class="ob-btn-ghost ob-btn-sm" id="addProductBtn">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <div id="catalog-platform" style="display:none">
+                <div class="ob-field"><label class="ob-label">Store URL</label><input class="ob-input" type="url"
+                    id="platform-url" name="platform_url" placeholder="https://yourstore.myshopify.com" /></div>
+                <div class="ob-field"><label class="ob-label">API Key</label><input class="ob-input ob-input--mono"
+                    type="password" id="platform-key" name="platform_key" placeholder="shpat_xxxx…"
+                    autocomplete="off" /></div>
+              </div>
+            </div>
+
+            <!-- School -->
+            <div class="ob-step4-panel" id="panel-school">
+              <div class="ob-section-label">🎓 Academic Information</div>
+              <div class="ob-row ob-row--2">
+                <div class="ob-field"><label class="ob-label">Classes Offered</label><input class="ob-input" type="text"
+                    name="classes_offered" placeholder="e.g. JSS1, JSS2, JSS3, SS1, SS2, SS3" /></div>
+                <div class="ob-field"><label class="ob-label">Term Structure</label><input class="ob-input" type="text"
+                    name="term_structure" placeholder="e.g. 3 terms per year" /></div>
+              </div>
+              <div class="ob-field"><label class="ob-label">Next Resumption Date</label><input class="ob-input"
+                  type="date" name="resumption_date" /></div>
+              <div class="ob-section-label" style="margin-top:24px;">💰 School Fees</div>
+              <div class="ob-row ob-row--3">
+                <div class="ob-field"><label class="ob-label">Tuition (₦)</label><input class="ob-input" type="number"
+                    name="tuition_fee" placeholder="120000" /></div>
+                <div class="ob-field"><label class="ob-label">Hostel (₦)</label><input class="ob-input" type="number"
+                    name="hostel_fee" placeholder="50000" /></div>
+                <div class="ob-field"><label class="ob-label">Admission (₦)</label><input class="ob-input" type="number"
+                    name="admission_fee" placeholder="25000" /></div>
+              </div>
+              <div class="ob-field"><label class="ob-label">Other Fees</label><textarea
+                  class="ob-input ob-textarea ob-textarea--sm" name="other_fees" rows="2"
+                  placeholder="e.g. Uniform: ₦15,000 · Books: ₦8,000 per term"></textarea></div>
+              <div class="ob-section-label" style="margin-top:24px;">📅 Academic Calendar</div>
+              <div class="ob-cal-grid">
+                <div class="ob-cal-term">
+                  <div class="ob-cal-label">Term 1</div>
+                  <div class="ob-row ob-row--2">
+                    <div class="ob-field"><label class="ob-label">Start</label><input class="ob-input" type="date"
+                        name="term_1_start" /></div>
+                    <div class="ob-field"><label class="ob-label">End</label><input class="ob-input" type="date"
+                        name="term_1_end" /></div>
+                  </div>
+                </div>
+                <div class="ob-cal-term">
+                  <div class="ob-cal-label">Term 2</div>
+                  <div class="ob-row ob-row--2">
+                    <div class="ob-field"><label class="ob-label">Start</label><input class="ob-input" type="date"
+                        name="term_2_start" /></div>
+                    <div class="ob-field"><label class="ob-label">End</label><input class="ob-input" type="date"
+                        name="term_2_end" /></div>
+                  </div>
+                </div>
+                <div class="ob-cal-term">
+                  <div class="ob-cal-label">Term 3</div>
+                  <div class="ob-row ob-row--2">
+                    <div class="ob-field"><label class="ob-label">Start</label><input class="ob-input" type="date"
+                        name="term_3_start" /></div>
+                    <div class="ob-field"><label class="ob-label">End</label><input class="ob-input" type="date"
+                        name="term_3_end" /></div>
+                  </div>
+                </div>
+              </div>
+              <div class="ob-row ob-row--2">
+                <div class="ob-field"><label class="ob-label">Exam Period</label><input class="ob-input" type="text"
+                    name="exam_period" placeholder="e.g. 2nd–3rd week of December" /></div>
+              </div>
+              <div class="ob-section-label" style="margin-top:24px;">📍 Location</div>
+              <div class="ob-field"><label class="ob-label">School Address</label><input class="ob-input" type="text"
+                  name="address" placeholder="Full school address" /></div>
+              <div class="ob-field"><label class="ob-label">Directions / Landmark</label><textarea
+                  class="ob-input ob-textarea ob-textarea--sm" name="directions" rows="2"
+                  placeholder="e.g. Opposite LASU, take the second gate…"></textarea></div>
+            </div>
+
+            <!-- Clinic -->
+            <div class="ob-step4-panel" id="panel-clinic">
+              <div class="ob-section-label">🩺 Clinic Services</div>
+              <div class="ob-list-wrap" id="clinicSvcList">
+                <div class="ob-clinicsvc-item ob-data-card">
+                  <div class="ob-row ob-row--3">
+                    <div class="ob-field"><label class="ob-label">Service Name</label><input class="ob-input"
+                        type="text" name="svc_name[]" placeholder="e.g. Consultation, Lab Test" /></div>
+                    <div class="ob-field"><label class="ob-label">Price (₦)</label><input class="ob-input" type="number"
+                        name="svc_price[]" placeholder="5000" /></div>
+                    <div class="ob-field"><label class="ob-label">Description</label><input class="ob-input" type="text"
+                        name="svc_desc[]" placeholder="Brief details…" /></div>
+                  </div>
+                  <button type="button" class="ob-clinicsvc-remove ob-remove-btn">✕ Remove</button>
+                </div>
+              </div>
+              <button type="button" class="ob-btn-ghost ob-btn-sm" id="addClinicSvcBtn"><svg width="14" height="14"
+                  viewBox="0 0 14 14" fill="none">
                   <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                </svg>
-                Add another product
-              </button>
-            </div>
-
-            <!-- CSV import panel -->
-            <div id="catalog-csv" style="display:none">
-              <div class="ob-upload">
-                <input type="file" name="catalog_csv" accept=".csv" class="ob-upload__input"
-                  aria-label="Upload catalog CSV" />
-                <div class="ob-upload__inner">
-                  <div class="ob-upload__icon">📊</div>
-                  <div class="ob-upload__text">
-                    <strong>Upload your product CSV</strong><br />
-                    <span>Download <a href="#" class="ob-link">sample template</a> · Max 50MB</span>
+                </svg> Add service</button>
+              <div class="ob-section-label" style="margin-top:24px;">👨‍⚕️ Doctors</div>
+              <div class="ob-list-wrap" id="doctorList">
+                <div class="ob-doctor-item ob-data-card">
+                  <div class="ob-row ob-row--3">
+                    <div class="ob-field"><label class="ob-label">Doctor Name</label><input class="ob-input" type="text"
+                        name="doc_name[]" placeholder="Dr. Adeola Bello" /></div>
+                    <div class="ob-field"><label class="ob-label">Specialty</label><input class="ob-input" type="text"
+                        name="doc_specialty[]" placeholder="e.g. Cardiologist" /></div>
+                    <div class="ob-field"><label class="ob-label">Availability</label><input class="ob-input"
+                        type="text" name="doc_availability[]" placeholder="Mon, Wed, Fri 9am–3pm" /></div>
                   </div>
+                  <button type="button" class="ob-doctor-remove ob-remove-btn">✕ Remove</button>
                 </div>
               </div>
+              <button type="button" class="ob-btn-ghost ob-btn-sm" id="addDoctorBtn"><svg width="14" height="14"
+                  viewBox="0 0 14 14" fill="none">
+                  <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg> Add doctor</button>
+              <div class="ob-section-label" style="margin-top:24px;">⏰ Hours &amp; Emergency</div>
+              <div class="ob-row ob-row--2">
+                <div class="ob-field"><label class="ob-label">Opening Hours</label><input class="ob-input" type="text"
+                    name="opening_hours" placeholder="Mon–Fri: 8am–6pm" /></div>
+                <div class="ob-field"><label class="ob-label">Consultation Fee (₦)</label><input class="ob-input"
+                    type="number" name="consultation_fee" placeholder="5000" /></div>
+              </div>
+              <div class="ob-row ob-row--2">
+                <div class="ob-field"><label class="ob-label">24/7 Emergency?</label><label
+                    class="ob-toggle ob-toggle--inline"><input type="checkbox" name="emergency_available"
+                      class="ob-toggle__input" /><span class="ob-toggle__track"></span><span
+                      class="ob-toggle__label">Yes, emergency available</span></label></div>
+                <div class="ob-field"><label class="ob-label">Emergency Number</label><input class="ob-input" type="tel"
+                    name="emergency_number" placeholder="+234 800 000 0000" /></div>
+              </div>
+              <div class="ob-field"><label class="ob-label">Address</label><input class="ob-input" type="text"
+                  name="address" placeholder="Clinic address" /></div>
             </div>
 
-            <!-- Platform integration panel -->
-            <div id="catalog-platform" style="display:none">
-              <div class="ob-field">
-                <label class="ob-label" for="platform-url">Store URL</label>
-                <input class="ob-input" type="url" id="platform-url" name="platform_url"
-                  placeholder="https://yourstore.myshopify.com" />
+            <!-- Service Business -->
+            <div class="ob-step4-panel" id="panel-service">
+              <div class="ob-section-label">⚙️ Services Offered</div>
+              <div class="ob-list-wrap" id="svcList">
+                <div class="ob-svc-item ob-data-card">
+                  <div class="ob-row ob-row--2">
+                    <div class="ob-field"><label class="ob-label">Service Name</label><input class="ob-input"
+                        type="text" name="svc_name[]" placeholder="e.g. Haircut, Logo Design" /></div>
+                    <div class="ob-field"><label class="ob-label">Pricing Type</label>
+                      <div class="ob-select-wrap"><select class="ob-input ob-select" name="svc_pricing_type[]">
+                          <option value="fixed">Fixed Price</option>
+                          <option value="custom">Custom Quote</option>
+                          <option value="hourly">Per Hour</option>
+                        </select><span class="ob-select-arrow">▾</span></div>
+                    </div>
+                  </div>
+                  <div class="ob-row ob-row--3">
+                    <div class="ob-field"><label class="ob-label">Price (₦)</label><input class="ob-input" type="number"
+                        name="svc_price[]" placeholder="5000" /></div>
+                    <div class="ob-field"><label class="ob-label">Turnaround</label><input class="ob-input" type="text"
+                        name="svc_turnaround[]" placeholder="e.g. 30 mins, 3–5 days" /></div>
+                    <div class="ob-field"><label class="ob-label">Description</label><input class="ob-input" type="text"
+                        name="svc_desc[]" placeholder="Brief details…" /></div>
+                  </div>
+                  <button type="button" class="ob-svc-remove ob-remove-btn">✕ Remove</button>
+                </div>
               </div>
-              <div class="ob-field">
-                <label class="ob-label" for="platform-key">API Key</label>
-                <input class="ob-input ob-input--mono" type="password" id="platform-key" name="platform_key"
-                  placeholder="shpat_xxxx…" autocomplete="off" />
+              <button type="button" class="ob-btn-ghost ob-btn-sm" id="addSvcBtn"><svg width="14" height="14"
+                  viewBox="0 0 14 14" fill="none">
+                  <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg> Add service</button>
+              <div class="ob-divider"></div>
+              <div class="ob-row ob-row--2">
+                <div class="ob-field"><label class="ob-label">Booking Required?</label><label
+                    class="ob-toggle ob-toggle--inline"><input type="checkbox" name="booking_required"
+                      class="ob-toggle__input" checked /><span class="ob-toggle__track"></span><span
+                      class="ob-toggle__label">Yes, customers must book</span></label></div>
+                <div class="ob-field"><label class="ob-label">Booking URL</label><input class="ob-input" type="url"
+                    name="booking_url" placeholder="https://calendly.com/…" /></div>
               </div>
+            </div>
+
+            <!-- Restaurant -->
+            <div class="ob-step4-panel" id="panel-restaurant">
+              <div class="ob-section-label">🍽️ Menu Items</div>
+              <div class="ob-list-wrap" id="menuList">
+                <div class="ob-menu-item ob-data-card">
+                  <div class="ob-row ob-row--4">
+                    <div class="ob-field"><label class="ob-label">Category</label><input class="ob-input" type="text"
+                        name="item_category[]" placeholder="e.g. Starters, Mains" /></div>
+                    <div class="ob-field"><label class="ob-label">Item Name</label><input class="ob-input" type="text"
+                        name="item_name[]" placeholder="e.g. Jollof Rice" /></div>
+                    <div class="ob-field"><label class="ob-label">Price (₦)</label><input class="ob-input" type="number"
+                        name="item_price[]" placeholder="2500" /></div>
+                    <div class="ob-field"><label class="ob-label">Description</label><input class="ob-input" type="text"
+                        name="item_desc[]" placeholder="Brief description…" /></div>
+                  </div>
+                  <button type="button" class="ob-menu-remove ob-remove-btn">✕ Remove</button>
+                </div>
+              </div>
+              <button type="button" class="ob-btn-ghost ob-btn-sm" id="addMenuBtn"><svg width="14" height="14"
+                  viewBox="0 0 14 14" fill="none">
+                  <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg> Add menu item</button>
+              <div class="ob-divider"></div>
+              <div class="ob-section-label">⚙️ Operations</div>
+              <div class="ob-row ob-row--2">
+                <div class="ob-field"><label class="ob-label">Opening Hours</label><input class="ob-input" type="text"
+                    name="opening_hours" placeholder="Mon–Sun: 8am–10pm" /></div>
+                <div class="ob-field"><label class="ob-label">Delivery Option</label>
+                  <div class="ob-select-wrap"><select class="ob-input ob-select" name="delivery_option">
+                      <option value="both">Dine-in &amp; Delivery</option>
+                      <option value="dine_only">Dine-in Only</option>
+                      <option value="delivery_only">Delivery Only</option>
+                      <option value="takeaway">Takeaway</option>
+                    </select><span class="ob-select-arrow">▾</span></div>
+                </div>
+              </div>
+              <div class="ob-row ob-row--3">
+                <div class="ob-field"><label class="ob-label">Delivery Fee (₦)</label><input class="ob-input"
+                    type="number" name="delivery_fee" placeholder="500" /></div>
+                <div class="ob-field"><label class="ob-label">Min. Order (₦)</label><input class="ob-input"
+                    type="number" name="min_order" placeholder="2000" /></div>
+                <div class="ob-field"><label class="ob-label">Address</label><input class="ob-input" type="text"
+                    name="address" placeholder="Restaurant address" /></div>
+              </div>
+            </div>
+
+            <!-- Hotel -->
+            <div class="ob-step4-panel" id="panel-hotel">
+              <div class="ob-section-label">🛏️ Room Types</div>
+              <div class="ob-list-wrap" id="roomList">
+                <div class="ob-room-item ob-data-card">
+                  <div class="ob-row ob-row--4">
+                    <div class="ob-field"><label class="ob-label">Room Type</label><input class="ob-input" type="text"
+                        name="room_type[]" placeholder="e.g. Standard, Deluxe, Suite" /></div>
+                    <div class="ob-field"><label class="ob-label">Price/Night (₦)</label><input class="ob-input"
+                        type="number" name="room_price[]" placeholder="45000" /></div>
+                    <div class="ob-field"><label class="ob-label">Capacity</label><input class="ob-input" type="number"
+                        name="room_capacity[]" placeholder="2" min="1" /></div>
+                    <div class="ob-field"><label class="ob-label">Description</label><input class="ob-input" type="text"
+                        name="room_desc[]" placeholder="King bed, city view, AC…" /></div>
+                  </div>
+                  <button type="button" class="ob-room-remove ob-remove-btn">✕ Remove</button>
+                </div>
+              </div>
+              <button type="button" class="ob-btn-ghost ob-btn-sm" id="addRoomBtn"><svg width="14" height="14"
+                  viewBox="0 0 14 14" fill="none">
+                  <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg> Add room type</button>
+              <div class="ob-divider"></div>
+              <div class="ob-section-label">⚙️ Hotel Details</div>
+              <div class="ob-row ob-row--2">
+                <div class="ob-field"><label class="ob-label">Check-in Time</label><input class="ob-input" type="text"
+                    name="check_in_time" placeholder="2:00 PM" /></div>
+                <div class="ob-field"><label class="ob-label">Check-out Time</label><input class="ob-input" type="text"
+                    name="check_out_time" placeholder="12:00 PM" /></div>
+              </div>
+              <div class="ob-field"><label class="ob-label">Amenities</label><input class="ob-input" type="text"
+                  name="amenities" placeholder="e.g. Free WiFi, Swimming Pool, Gym, Restaurant, Airport Shuttle" />
+              </div>
+              <div class="ob-field"><label class="ob-label">Address</label><input class="ob-input" type="text"
+                  name="address" placeholder="Hotel address" /></div>
+            </div>
+
+            <!-- Generic -->
+            <div class="ob-step4-panel" id="panel-generic">
+              <div class="ob-section-label">📋 Your Offerings</div>
+              <div class="ob-field"><label class="ob-label">What do you offer?</label><textarea
+                  class="ob-input ob-textarea" name="offerings" rows="4"
+                  placeholder="Describe your products, services, courses, or packages in detail. Your AI will use this to answer customer questions…"></textarea>
+              </div>
+              <div class="ob-field"><label class="ob-label">Pricing Summary</label><textarea
+                  class="ob-input ob-textarea ob-textarea--sm" name="pricing_summary" rows="3"
+                  placeholder="e.g. Basic Plan: ₦10,000/month · Pro: ₦25,000/month · Enterprise: Custom"></textarea>
+              </div>
+              <div class="ob-row ob-row--2">
+                <div class="ob-field"><label class="ob-label">Working Hours</label><input class="ob-input" type="text"
+                    name="opening_hours" placeholder="Mon–Fri: 9am–5pm" /></div>
+                <div class="ob-field"><label class="ob-label">Office / Location</label><input class="ob-input"
+                    type="text" name="address" placeholder="Address or 'Remote'" /></div>
+              </div>
+              <div class="ob-field"><label class="ob-label">Additional Notes for AI</label><textarea
+                  class="ob-input ob-textarea ob-textarea--sm" name="extra_notes" rows="3"
+                  placeholder="Any other info your AI should know…"></textarea></div>
             </div>
 
           </form>
         </div>
       </section>
 
-      <!-- ══════════════════════════════════════
-           STEP 5 — Team Members & Notifications
-      ══════════════════════════════════════ -->
+
+      <!-- STEP 5: Team & Notifications -->
       <section class="ob-step" id="step-5" data-step="5" aria-labelledby="step5-title">
         <div class="ob-card">
           <div class="ob-card__icon-wrap">
             <div class="ob-card__icon" style="--icon-color: rgba(52,211,153,0.15);">👥</div>
           </div>
           <div class="ob-card__head">
-            <h2 class="ob-card__title" id="step5-title">Team Members &amp; Notifications</h2>
-            <p class="ob-card__sub">Invite teammates and configure how you'd like to be notified about conversations and
-              sales.</p>
+            <h2 class="ob-card__title" id="step5-title">Team &amp; Notifications</h2>
+            <p class="ob-card__sub">Invite teammates and configure how you want to be notified.</p>
           </div>
-
           <form class="ob-form" id="form-step-5" novalidate>
             {% csrf_token %}
             <input type="hidden" name="step" value="5" />
-
             <div class="ob-section-label">Invite Team Members</div>
             <div class="ob-team-list" id="teamList">
               <div class="ob-team-item">
                 <div class="ob-row ob-row--3">
-                  <div class="ob-field ob-field--grow">
-                    <label class="ob-label" for="team-email-1">Email Address</label>
-                    <input class="ob-input" type="email" id="team-email-1" name="team_email[]"
-                      placeholder="colleague@business.com" autocomplete="off" />
-                  </div>
-                  <div class="ob-field">
-                    <label class="ob-label">Role</label>
-                    <div class="ob-select-wrap">
-                      <select class="ob-input ob-select" name="team_role[]">
+                  <div class="ob-field ob-field--grow"><label class="ob-label">Email Address</label><input
+                      class="ob-input" type="email" name="team_email[]" placeholder="colleague@business.com"
+                      autocomplete="off" /></div>
+                  <div class="ob-field"><label class="ob-label">Role</label>
+                    <div class="ob-select-wrap"><select class="ob-input ob-select" name="team_role[]">
                         <option value="admin">Admin</option>
                         <option value="manager">Manager</option>
                         <option value="agent" selected>Support Agent</option>
                         <option value="viewer">Viewer</option>
-                      </select>
-                      <span class="ob-select-arrow" aria-hidden="true">▾</span>
-                    </div>
+                      </select><span class="ob-select-arrow">▾</span></div>
                   </div>
-                  <div class="ob-field ob-field--center">
-                    <label class="ob-label">&nbsp;</label>
-                    <button type="button" class="ob-team-remove ob-btn-ghost ob-btn-sm"
-                      aria-label="Remove member">Remove</button>
-                  </div>
+                  <div class="ob-field ob-field--center"><label class="ob-label">&nbsp;</label><button type="button"
+                      class="ob-team-remove ob-btn-ghost ob-btn-sm">Remove</button></div>
                 </div>
               </div>
             </div>
-            <button type="button" class="ob-btn-ghost ob-btn-sm" id="addTeamBtn">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <button type="button" class="ob-btn-ghost ob-btn-sm" id="addTeamBtn"><svg width="14" height="14"
+                viewBox="0 0 14 14" fill="none">
                 <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              </svg>
-              Invite another teammate
-            </button>
-
+              </svg> Invite another teammate</button>
             <div class="ob-divider"></div>
-
             <div class="ob-section-label">Notification Preferences</div>
             <div class="ob-notif-grid">
               <label class="ob-notif-item">
                 <div class="ob-notif-info">
                   <div class="ob-notif-title">New conversation</div>
                   <div class="ob-notif-desc">Alert when a customer starts a new chat</div>
-                </div>
-                <label class="ob-toggle">
-                  <input type="checkbox" name="notif_new_conv" class="ob-toggle__input" checked />
-                  <span class="ob-toggle__track"></span>
-                </label>
+                </div><label class="ob-toggle"><input type="checkbox" name="notif_new_conv" class="ob-toggle__input"
+                    checked /><span class="ob-toggle__track"></span></label>
               </label>
               <label class="ob-notif-item">
                 <div class="ob-notif-info">
                   <div class="ob-notif-title">Sale completed</div>
                   <div class="ob-notif-desc">Alert when AI closes a sale</div>
-                </div>
-                <label class="ob-toggle">
-                  <input type="checkbox" name="notif_sale" class="ob-toggle__input" checked />
-                  <span class="ob-toggle__track"></span>
-                </label>
+                </div><label class="ob-toggle"><input type="checkbox" name="notif_sale" class="ob-toggle__input"
+                    checked /><span class="ob-toggle__track"></span></label>
               </label>
               <label class="ob-notif-item">
                 <div class="ob-notif-info">
                   <div class="ob-notif-title">Escalation needed</div>
                   <div class="ob-notif-desc">Alert when AI can't handle a request</div>
-                </div>
-                <label class="ob-toggle">
-                  <input type="checkbox" name="notif_escalation" class="ob-toggle__input" checked />
-                  <span class="ob-toggle__track"></span>
-                </label>
+                </div><label class="ob-toggle"><input type="checkbox" name="notif_escalation" class="ob-toggle__input"
+                    checked /><span class="ob-toggle__track"></span></label>
               </label>
               <label class="ob-notif-item">
                 <div class="ob-notif-info">
                   <div class="ob-notif-title">Weekly report</div>
                   <div class="ob-notif-desc">Weekly summary of AI performance</div>
-                </div>
-                <label class="ob-toggle">
-                  <input type="checkbox" name="notif_weekly" class="ob-toggle__input" />
-                  <span class="ob-toggle__track"></span>
-                </label>
+                </div><label class="ob-toggle"><input type="checkbox" name="notif_weekly"
+                    class="ob-toggle__input" /><span class="ob-toggle__track"></span></label>
               </label>
             </div>
-
             <div class="ob-divider"></div>
-
             <div class="ob-section-label">Notification Channels</div>
             <div class="ob-row ob-row--2">
-              <div class="ob-field">
-                <label class="ob-label" for="notif-email">Notification Email <span class="ob-req">*</span></label>
-                <input class="ob-input" type="email" id="notif-email" name="notif_email"
-                  placeholder="alerts@yourbusiness.com" required autocomplete="off" />
-                <span class="ob-err" role="alert"></span>
-              </div>
-              <div class="ob-field">
-                <label class="ob-label" for="notif-slack">Slack Webhook URL</label>
-                <input class="ob-input ob-input--mono" type="url" id="notif-slack" name="notif_slack"
-                  placeholder="https://hooks.slack.com/services/…" autocomplete="off" />
-              </div>
+              <div class="ob-field"><label class="ob-label" for="notif-email">Notification Email <span
+                    class="ob-req">*</span></label><input class="ob-input" type="email" id="notif-email"
+                  name="notif_email" placeholder="alerts@yourbusiness.com" required autocomplete="off" /><span
+                  class="ob-err" role="alert"></span></div>
+              <div class="ob-field"><label class="ob-label" for="notif-slack">Slack Webhook URL</label><input
+                  class="ob-input ob-input--mono" type="url" id="notif-slack" name="notif_slack"
+                  placeholder="https://hooks.slack.com/services/…" autocomplete="off" /></div>
             </div>
-
           </form>
         </div>
       </section>
 
-      <!-- ══════════════════════════════════════
-           STEP 6 — Final Preview & Go Live
-      ══════════════════════════════════════ -->
+
+      <!-- STEP 6: Review & Go Live -->
       <section class="ob-step" id="step-6" data-step="6" aria-labelledby="step6-title">
         <div class="ob-card ob-card--final">
           <div class="ob-card__icon-wrap">
@@ -619,62 +908,50 @@
           </div>
           <div class="ob-card__head">
             <h2 class="ob-card__title" id="step6-title">Review &amp; Go Live</h2>
-            <p class="ob-card__sub">Everything looks great! Review your setup below and launch your AI sales agent.</p>
+            <p class="ob-card__sub">Everything looks great! Review your setup and launch your AI sales agent.</p>
           </div>
-
-          <!-- Review summary populated by JS -->
           <div class="ob-review" id="reviewSummary">
             <div class="ob-review-section">
-              <h3 class="ob-review-heading">
-                <span class="ob-review-icon">🏢</span> Business Profile
-                <button type="button" class="ob-review-edit" data-goto="1">Edit</button>
-              </h3>
+              <h3 class="ob-review-heading"><span class="ob-review-icon">🏗️</span> Business Type <button type="button"
+                  class="ob-review-edit" data-goto="0">Edit</button></h3>
+              <div class="ob-review-grid" id="review-step0"></div>
+            </div>
+            <div class="ob-review-section">
+              <h3 class="ob-review-heading"><span class="ob-review-icon">🏢</span> Business Profile <button
+                  type="button" class="ob-review-edit" data-goto="1">Edit</button></h3>
               <div class="ob-review-grid" id="review-step1"></div>
             </div>
             <div class="ob-review-section">
-              <h3 class="ob-review-heading">
-                <span class="ob-review-icon">📡</span> Channels Connected
-                <button type="button" class="ob-review-edit" data-goto="2">Edit</button>
-              </h3>
+              <h3 class="ob-review-heading"><span class="ob-review-icon">📡</span> Channels <button type="button"
+                  class="ob-review-edit" data-goto="2">Edit</button></h3>
               <div class="ob-review-grid" id="review-step2"></div>
             </div>
             <div class="ob-review-section">
-              <h3 class="ob-review-heading">
-                <span class="ob-review-icon">🧠</span> AI Configuration
-                <button type="button" class="ob-review-edit" data-goto="3">Edit</button>
-              </h3>
+              <h3 class="ob-review-heading"><span class="ob-review-icon">🧠</span> AI Configuration <button
+                  type="button" class="ob-review-edit" data-goto="3">Edit</button></h3>
               <div class="ob-review-grid" id="review-step3"></div>
             </div>
             <div class="ob-review-section">
-              <h3 class="ob-review-heading">
-                <span class="ob-review-icon">🛒</span> Products / Catalog
-                <button type="button" class="ob-review-edit" data-goto="4">Edit</button>
-              </h3>
+              <h3 class="ob-review-heading"><span class="ob-review-icon">📊</span> Business Data <button type="button"
+                  class="ob-review-edit" data-goto="4">Edit</button></h3>
               <div class="ob-review-grid" id="review-step4"></div>
             </div>
             <div class="ob-review-section">
-              <h3 class="ob-review-heading">
-                <span class="ob-review-icon">👥</span> Team &amp; Notifications
-                <button type="button" class="ob-review-edit" data-goto="5">Edit</button>
-              </h3>
+              <h3 class="ob-review-heading"><span class="ob-review-icon">👥</span> Team &amp; Notifications <button
+                  type="button" class="ob-review-edit" data-goto="5">Edit</button></h3>
               <div class="ob-review-grid" id="review-step5"></div>
             </div>
           </div>
-
           <div class="ob-golive-box">
             <div class="ob-golive-checks">
-              <div class="ob-check-item" id="chk-profile">
-                <span class="ob-check-icon ob-check-icon--ok">✓</span> Business profile complete
-              </div>
-              <div class="ob-check-item" id="chk-channel">
-                <span class="ob-check-icon ob-check-icon--ok">✓</span> At least one channel connected
-              </div>
-              <div class="ob-check-item" id="chk-ai">
-                <span class="ob-check-icon ob-check-icon--ok">✓</span> AI agent configured
+              <div class="ob-check-item"><span class="ob-check-icon ob-check-icon--ok">✓</span> Business profile
+                complete</div>
+              <div class="ob-check-item"><span class="ob-check-icon ob-check-icon--ok">✓</span> At least one channel
+                connected</div>
+              <div class="ob-check-item"><span class="ob-check-icon ob-check-icon--ok">✓</span> AI agent configured
               </div>
             </div>
           </div>
-
           <form id="form-step-6" novalidate>
             {% csrf_token %}
             <input type="hidden" name="step" value="6" />
@@ -690,7 +967,7 @@
 
     </div><!-- /ob-steps-container -->
 
-    <!-- ── NAVIGATION BUTTONS ── -->
+    <!-- Navigation -->
     <div class="ob-nav-actions">
       <button type="button" class="ob-btn-ghost" id="prevBtn" disabled aria-label="Go to previous step">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -699,11 +976,7 @@
         </svg>
         Back
       </button>
-
-      <div class="ob-nav-center">
-        <span class="ob-save-status" id="saveStatus" aria-live="polite"></span>
-      </div>
-
+      <div class="ob-nav-center"><span class="ob-save-status" id="saveStatus" aria-live="polite"></span></div>
       <button type="button" class="ob-btn-primary" id="nextBtn" aria-label="Continue to next step">
         Continue
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -715,7 +988,7 @@
 
   </main>
 
-  <!-- ── LAUNCH SUCCESS OVERLAY ── -->
+  <!-- Success Overlay -->
   <div class="ob-success-overlay" id="successOverlay" hidden aria-modal="true" role="dialog"
     aria-labelledby="successTitle">
     <div class="ob-success-card">
