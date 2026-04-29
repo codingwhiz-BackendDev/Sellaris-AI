@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, login as auth_login 
 from django.contrib.auth.models import auth
-from django.contrib.auth import get_user_model
+User = get_user_model()
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.core.validators import validate_email
@@ -12,13 +12,18 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 import json
 import requests
+import re
+import zipfile
 from decimal import Decimal, InvalidOperation
 from django.conf import settings
 import urllib.parse
 from django.http import JsonResponse 
 from .models import (
     OnboardingProgress, BusinessProfile, MessagingChannel,
-    AIConfig, FAQEntry, Product, TeamMember, NotificationSettings
+    AIConfig, FAQEntry, Product, TeamMember, NotificationSettings,
+    SchoolInfo, ClinicInfo, ClinicService, ClinicDoctor, ServiceBusiness,
+    ServiceItem, RestaurantInfo, MenuItem, HotelInfo, HotelRoom,
+    GenericServiceInfo
 )
 
 # Create your views here.
@@ -230,10 +235,6 @@ def resend_verification(request):
 
     return render(request, 'verify_pending.html', {'email': email, 'resent': True})
 
-def logout(request):
-    auth.logout(request)
-    return redirect('login')
-
 def forgot_password(request):
     if request.method == "POST":
         email = request.POST.get("email", "").strip().lower()
@@ -306,8 +307,6 @@ def reset_password(request, uidb64, token):
 
 
 
-
-User = get_user_model()
 
 @login_required(login_url='login')
 def onboarding(request):
@@ -386,9 +385,177 @@ def complete_onboarding(request):
     progress.status = 'completed'
     progress.save()
     return JsonResponse({'success': True})
+
+
+@login_required(login_url='login')
+@require_POST
+def auto_fill_business(request):
+    website_url = (request.POST.get('website_url') or '').strip()
+    business_type = (request.POST.get('business_type') or '').strip()
+    uploaded_files = request.FILES.getlist('documents')
+
+    text_blocks = []
+    if website_url:
+        text_blocks.append(_extract_text_from_url(website_url))
+    for uploaded_file in uploaded_files:
+        text_blocks.append(_extract_text_from_file(uploaded_file))
+
+    source_text = "\n\n".join([t for t in text_blocks if (t or '').strip()]).strip()
+    if not source_text:
+        return JsonResponse({
+            'success': False,
+            'message': 'Provide a website URL or upload at least one supported file.',
+        }, status=400)
+
+    ai_payload = _run_gemini_business_extraction(source_text, business_type=business_type)
+    progress, _ = OnboardingProgress.objects.get_or_create(user=request.user)
+    progress.ai_extracted_data = ai_payload
+    progress.save(update_fields=['ai_extracted_data', 'updated_at'])
+
+    return JsonResponse({'success': True, 'data': ai_payload})
  
  
 # ── Private step savers ───────────────────────────────────────────────────────
+
+def _extract_text_from_url(url):
+    try:
+        if not url.lower().startswith(('http://', 'https://')):
+            url = f"https://{url}"
+        resp = requests.get(url, timeout=15, headers={
+            'User-Agent': 'Mozilla/5.0 (SellarisAI Onboarding Autofill)'
+        })
+        resp.raise_for_status()
+        html = resp.text or ''
+        html = re.sub(r'(?is)<script.*?>.*?</script>', ' ', html)
+        html = re.sub(r'(?is)<style.*?>.*?</style>', ' ', html)
+        text = re.sub(r'(?s)<[^>]+>', ' ', html)
+        text = re.sub(r'\s+', ' ', text).strip()
+        return text[:25000]
+    except Exception:
+        return ''
+
+
+def _extract_text_from_file(uploaded_file):
+    name = (uploaded_file.name or '').lower()
+    try:
+        if name.endswith('.txt'):
+            return uploaded_file.read().decode('utf-8', errors='ignore')[:25000]
+
+        if name.endswith('.pdf'):
+            try:
+                from pypdf import PdfReader
+            except Exception:
+                return ''
+            reader = PdfReader(uploaded_file)
+            return "\n".join([(page.extract_text() or '') for page in reader.pages])[:25000]
+
+        if name.endswith('.docx'):
+            # Parse document.xml directly to avoid hard dependency on python-docx.
+            with zipfile.ZipFile(uploaded_file) as archive:
+                xml = archive.read('word/document.xml').decode('utf-8', errors='ignore')
+            text = re.sub(r'<[^>]+>', ' ', xml)
+            return re.sub(r'\s+', ' ', text).strip()[:25000]
+    except Exception:
+        return ''
+    return ''
+
+
+def _extract_json_object(raw_text):
+    raw_text = (raw_text or '').strip()
+    if not raw_text:
+        return {}
+    if raw_text.startswith('```'):
+        raw_text = re.sub(r'^```[a-zA-Z]*\s*', '', raw_text)
+        raw_text = re.sub(r'\s*```$', '', raw_text)
+    try:
+        return json.loads(raw_text)
+    except Exception:
+        pass
+    match = re.search(r'\{.*\}', raw_text, re.S)
+    if not match:
+        return {}
+    try:
+        return json.loads(match.group(0))
+    except Exception:
+        return {}
+
+
+def _run_gemini_business_extraction(source_text, business_type=''):
+    api_key = getattr(settings, 'GEMINI_API_KEY', '') or ''
+    fallback = {
+        "business_name": "",
+        "industry": "",
+        "business_email": "",
+        "phone": "",
+        "website": "",
+        "description": "",
+        "tone": "friendly",
+        "faqs": [],
+        "products_services": [],
+        "address": "",
+        "working_hours": "",
+    }
+    if not api_key:
+        return fallback
+
+    prompt = f"""
+Extract structured business profile data from the text.
+Business type hint: {business_type or "unknown"}.
+
+Return STRICT JSON only (no markdown).
+Schema:
+{{
+  "business_name": "",
+  "industry": "",
+  "business_email": "",
+  "phone": "",
+  "website": "",
+  "description": "",
+  "tone": "friendly",
+  "faqs": [{{"question":"", "answer":""}}],
+  "products_services": [{{"name":"", "description":"", "price":"", "category":""}}],
+  "address": "",
+  "working_hours": ""
+}}
+
+Use empty strings/arrays if unknown.
+Text:
+{source_text[:22000]}
+""".strip()
+
+    try:
+        endpoint = (
+            "https://generativelanguage.googleapis.com/v1beta/models/"
+            "gemini-1.5-flash:generateContent"
+        )
+        resp = requests.post(
+            f"{endpoint}?key={api_key}",
+            timeout=35,
+            headers={'Content-Type': 'application/json'},
+            data=json.dumps({
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"temperature": 0.2},
+            }),
+        )
+        resp.raise_for_status()
+        payload = resp.json()
+        parts = payload.get('candidates', [{}])[0].get('content', {}).get('parts', [])
+        text = ''.join([(p.get('text') or '') for p in parts])
+        parsed = _extract_json_object(text)
+        if not isinstance(parsed, dict):
+            return fallback
+
+        result = fallback.copy()
+        for key in result.keys():
+            if key in parsed:
+                result[key] = parsed[key]
+        if not isinstance(result.get('faqs'), list):
+            result['faqs'] = []
+        if not isinstance(result.get('products_services'), list):
+            result['products_services'] = []
+        return result
+    except Exception:
+        return fallback
  
 def _save_step0(request):
     """Save business type selection."""
@@ -459,6 +626,7 @@ def _save_step4(request):
     """Save dynamic step 4 data based on business type."""
     progress, _ = OnboardingProgress.objects.get_or_create(user=request.user)
     btype = progress.business_type
+    _validate_step4_required(request, btype)
  
     if btype == 'ecommerce':
         _save_step4_ecommerce(request)
@@ -475,6 +643,42 @@ def _save_step4(request):
     else:
         # finance, corporate, coaching, other
         _save_step4_generic(request)
+
+
+def _has_any_value(request, fields):
+    for field in fields:
+        if request.FILES.get(field):
+            return True
+        values = request.POST.getlist(field)
+        if values and any((v or '').strip() for v in values):
+            return True
+        val = request.POST.get(field)
+        if (val or '').strip():
+            return True
+    return False
+
+
+def _validate_step4_required(request, btype):
+    if btype == 'ecommerce':
+        catalog_method = request.POST.get('catalog_method', 'manual')
+        if catalog_method == 'manual' and not _has_any_value(request, ['product_name[]']):
+            raise ValueError('Add at least one product name for e-commerce.')
+        if catalog_method == 'csv' and not _has_any_value(request, ['catalog_csv']):
+            raise ValueError('Upload a CSV file for e-commerce import.')
+        if catalog_method in ('shopify', 'woo') and not _has_any_value(request, ['platform_url']):
+            raise ValueError('Store URL is required for platform import.')
+        return
+
+    required_by_type = {
+        'school': ['classes_offered', 'address'],
+        'clinic': ['svc_name[]', 'doc_name[]', 'opening_hours'],
+        'service': ['svc_name[]'],
+        'restaurant': ['item_name[]'],
+        'hotel': ['room_type[]'],
+    }
+    fields = required_by_type.get(btype, ['offerings'])
+    if not _has_any_value(request, fields):
+        raise ValueError('Please provide the required business data for your selected business type.')
  
  
 def _save_step4_ecommerce(request):

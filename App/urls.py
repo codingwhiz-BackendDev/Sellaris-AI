@@ -12,6 +12,7 @@ urlpatterns = [
     path("reset-password/<uidb64>/<token>/", views.reset_password, name="reset_password"),
     path('onboarding', views.onboarding, name='onboarding'),
     path('onboarding/save-step', views.save_onboarding_step, name='onboarding_save_step'),
+    path('onboarding/auto-fill/', views.auto_fill_business, name='onboarding_auto_fill'),
     path('onboarding/complete', views.complete_onboarding, name='onboarding_complete'),
     
     path("channels/status", views.channel_status),

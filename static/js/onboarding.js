@@ -11,6 +11,7 @@
 const CONFIG = {
   totalSteps: 7,           // 0 (type) + steps 1-6
   saveUrl:           '/onboarding/save-step',
+  autoFillUrl:       '/onboarding/auto-fill/',
   completeUrl:       '/onboarding/complete',
   channelStatusUrl:  '/channels/status',
   channelConnectUrl: (ch) => `/channels/connect/${ch}`,
@@ -32,6 +33,30 @@ const CONFIG = {
     corporate:  'panel-generic',
     coaching:   'panel-generic',
     other:      'panel-generic',
+  },
+  businessTypeIndustryMap: {
+    ecommerce: 'fashion',
+    school: 'education',
+    clinic: 'health',
+    service: 'services',
+    hotel: 'hospitality',
+    restaurant: 'food',
+    finance: 'finance',
+    corporate: 'services',
+    coaching: 'education',
+    other: 'other',
+  },
+  businessProfileCopy: {
+    ecommerce: { nameLabel: 'Store Name', subtitle: 'Tell us about your store so your AI can sell and support customers faster.' },
+    school: { nameLabel: 'School Name', subtitle: 'Tell us about your institution so your AI can answer parents and students accurately.' },
+    clinic: { nameLabel: 'Clinic / Hospital Name', subtitle: 'Tell us about your healthcare facility so your AI can guide patients properly.' },
+    service: { nameLabel: 'Business Name', subtitle: 'Tell us about your service business so your AI can handle enquiries and bookings.' },
+    hotel: { nameLabel: 'Hotel Name', subtitle: 'Tell us about your property so your AI can assist guests and bookings better.' },
+    restaurant: { nameLabel: 'Restaurant Name', subtitle: 'Tell us about your restaurant so your AI can handle orders and menu questions.' },
+    finance: { nameLabel: 'Company Name', subtitle: 'Tell us about your financial business so your AI can respond with clarity and trust.' },
+    corporate: { nameLabel: 'Company Name', subtitle: 'Tell us about your company so your AI can support clients and stakeholders better.' },
+    coaching: { nameLabel: 'Academy / Brand Name', subtitle: 'Tell us about your coaching business so your AI can guide learners effectively.' },
+    other: { nameLabel: 'Business Name', subtitle: 'Tell us about your business so your AI can personalise responses from day one.' },
   },
 };
 
@@ -64,6 +89,7 @@ const successOverlay = () => $('#successOverlay');
    INIT
 ───────────────────────────────────────────── */
 function init() {
+  hydrateFromBackend();
   injectStyles();
   restoreFromStorage();
   updateProgressUI();
@@ -71,8 +97,25 @@ function init() {
   initFileUploads();
   initDynamicLists();
   initCatalogSwitcher();
+  initAutoFill();
+  syncIndustryFromBusinessType();
+  syncBusinessProfileFromType();
+  bindWebsiteSync();
   checkOAuthReturn();
   goToStep(state.currentStep, false);
+}
+
+function hydrateFromBackend() {
+  const app = $('#onboardingApp');
+  if (!app) return;
+  const currentStep = parseInt(app.dataset.currentStep || '0', 10);
+  const businessType = app.dataset.businessType || '';
+  if (!Number.isNaN(currentStep) && currentStep >= 0) {
+    state.currentStep = currentStep;
+  }
+  if (businessType) {
+    state.businessType = businessType;
+  }
 }
 
 /* ─────────────────────────────────────────────
@@ -176,8 +219,96 @@ function bindStaticEvents() {
     if (radio) {
       radio.checked = true;
       state.businessType = radio.value;
+      syncIndustryFromBusinessType();
+      syncBusinessProfileFromType();
     }
   });
+}
+
+function syncIndustryFromBusinessType() {
+  const industryInput = $('#biz-industry');
+  if (!industryInput) return;
+  if ((industryInput.value || '').trim()) return;
+  const mapped = CONFIG.businessTypeIndustryMap[state.businessType];
+  if (mapped) industryInput.value = mapped;
+}
+
+function syncBusinessProfileFromType() {
+  const copy = CONFIG.businessProfileCopy[state.businessType] || CONFIG.businessProfileCopy.other;
+  const nameLabel = $('#biz-name-label');
+  const subtitle = $('#step1-subtitle');
+  if (nameLabel) nameLabel.innerHTML = `${copy.nameLabel} <span class="ob-req">*</span>`;
+  if (subtitle) subtitle.textContent = copy.subtitle;
+}
+
+function bindWebsiteSync() {
+  const sourceInput = $('#autofill-website');
+  const hiddenWebsite = $('#biz-website');
+  if (!sourceInput || !hiddenWebsite) return;
+  sourceInput.addEventListener('input', () => {
+    hiddenWebsite.value = sourceInput.value.trim();
+  });
+}
+
+function initAutoFill() {
+  const btn = $('#autoFillAiBtn');
+  if (!btn) return;
+  btn.addEventListener('click', handleAutoFill);
+}
+
+function setAutoFillStatus(type, message) {
+  const el = $('#autoFillStatus');
+  if (!el) return;
+  if (!type) {
+    el.className = 'ob-save-status';
+    el.textContent = '';
+    return;
+  }
+  el.className = `ob-save-status ${type}`;
+  el.textContent = message || '';
+}
+
+async function handleAutoFill() {
+  const btn = $('#autoFillAiBtn');
+  const websiteInput = $('#autofill-website');
+  const docsInput = $('#autofill-docs');
+
+  const website = websiteInput?.value?.trim() || '';
+  const files = docsInput?.files ? [...docsInput.files] : [];
+  if (!website && files.length === 0) {
+    setAutoFillStatus('error', 'Add a website URL or upload at least one document.');
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  setAutoFillStatus('saving', 'Analyzing your business...');
+
+  try {
+    const fd = new FormData();
+    fd.append('website_url', website);
+    fd.append('business_type', state.businessType || '');
+    files.forEach((file) => fd.append('documents', file));
+    fd.append('csrfmiddlewaretoken', getCsrf());
+
+    const resp = await fetch(CONFIG.autoFillUrl, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCsrf() },
+      body: fd,
+      credentials: 'same-origin',
+    });
+    const payload = await resp.json();
+    if (!resp.ok || payload.success === false) {
+      throw new Error(payload.message || 'AI analysis failed');
+    }
+
+    applyAutoFillData(payload.data || {});
+    setAutoFillStatus('saved', 'Auto-fill complete. Review and edit if needed.');
+    setTimeout(() => setAutoFillStatus('', ''), 3500);
+  } catch (err) {
+    setAutoFillStatus('error', err.message || 'Could not auto-fill right now.');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
 async function handleNext() {
@@ -248,11 +379,29 @@ function validateStep(step) {
     case 1: return validateStep1(form);
     case 2: return validateStep2();
     case 3: return validateStep3(form);
-    case 4: return true;  // optional
+    case 4: return validateStep4(form);
     case 5: return validateStep5(form);
     case 6: return validateStep6(form);
     default: return true;
   }
+}
+
+function validateStep4(form) {
+  const btype = state.businessType;
+
+  if (btype === 'ecommerce') {
+    const catalog = form.querySelector('[name="catalog_method"]:checked')?.value || 'manual';
+    if (catalog === 'manual') return checkAnyRequired(form, ['product_name[]'], 'Add at least one product name.');
+    if (catalog === 'csv') return checkAnyRequired(form, ['catalog_csv'], 'Please upload a product CSV file.');
+    return checkAnyRequired(form, ['platform_url'], 'Store URL is required for platform import.');
+  }
+
+  if (btype === 'school') return checkAnyRequired(form, ['classes_offered', 'address'], 'Classes offered or school address is required.');
+  if (btype === 'clinic') return checkAnyRequired(form, ['svc_name[]', 'doc_name[]', 'opening_hours'], 'Add at least a service, doctor, or opening hours.');
+  if (btype === 'service') return checkAnyRequired(form, ['svc_name[]'], 'Add at least one service.');
+  if (btype === 'restaurant') return checkAnyRequired(form, ['item_name[]'], 'Add at least one menu item.');
+  if (btype === 'hotel') return checkAnyRequired(form, ['room_type[]'], 'Add at least one room type.');
+  return checkAnyRequired(form, ['offerings'], 'Please describe what you offer.');
 }
 
 function validateStep0() {
@@ -272,7 +421,6 @@ function validateStep0() {
 function validateStep1(form) {
   return [
     checkRequired(form, 'business_name'),
-    checkRequired(form, 'industry'),
     checkEmail(form, 'business_email'),
     checkRequired(form, 'phone'),
     checkRequired(form, 'description'),
@@ -336,6 +484,21 @@ function checkRadio(form, name, errId) {
   return true;
 }
 
+function checkAnyRequired(form, names, message) {
+  const hasValue = names.some((name) => {
+    const fields = form.querySelectorAll(`[name="${name}"]`);
+    if (!fields.length) return false;
+    return [...fields].some((el) => {
+      if (el.type === 'file') return el.files && el.files.length > 0;
+      return (el.value || '').toString().trim() !== '';
+    });
+  });
+
+  if (hasValue) return true;
+  showToast(message, 'error');
+  return false;
+}
+
 function setFieldError(el, msg) {
   const err = el.closest('.ob-field')?.querySelector('.ob-err');
   if (err) err.textContent = msg;
@@ -387,6 +550,13 @@ async function saveStepData(step) {
 
   const formData = new FormData(form);
   formData.set('step', step);
+  if (step === 1 && state.businessType && !formData.get('business_type')) {
+    formData.set('business_type', state.businessType);
+  }
+  if (step === 1 && !formData.get('website')) {
+    const websiteInput = $('#autofill-website');
+    if (websiteInput?.value?.trim()) formData.set('website', websiteInput.value.trim());
+  }
 
   // Snapshot for review summary
   const snapshot = {};
@@ -407,6 +577,7 @@ async function saveStepData(step) {
     });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
+    if (data.business_type) state.businessType = data.business_type;
     if (data.success === false) { setSaveStatus('error', data.message || 'Save failed'); return false; }
     setSaveStatus('saved');
     setTimeout(() => setSaveStatus(''), 2500);
@@ -693,11 +864,11 @@ function restoreFromStorage() {
     const raw = localStorage.getItem(CONFIG.storageKey);
     if (!raw) return;
     const saved = JSON.parse(raw);
-    state.currentStep       = saved.currentStep       || 0;
+    state.currentStep       = Math.max(state.currentStep, saved.currentStep || 0);
     state.completedSteps    = saved.completedSteps    || [];
     state.stepData          = saved.stepData          || {};
     state.connectedChannels = saved.connectedChannels || [];
-    state.businessType      = saved.businessType      || '';
+    state.businessType      = saved.businessType      || state.businessType || '';
     Object.entries(state.stepData).forEach(([step, data]) => restoreFormFields(parseInt(step), data));
     // Restore business type selection visual
     if (state.businessType) {
@@ -729,6 +900,140 @@ function restoreFormFields(step, data) {
 
 function clearStorage() {
   try { localStorage.removeItem(CONFIG.storageKey); } catch (_) {}
+}
+
+function applyAutoFillData(data) {
+  if (!data || typeof data !== 'object') return;
+
+  // Step 1
+  fillInputIfEmpty('#biz-name', data.business_name);
+  fillInputIfEmpty('#biz-email', data.business_email);
+  fillInputIfEmpty('#biz-phone', data.phone);
+  fillInputIfEmpty('#biz-desc', data.description);
+  fillInputIfEmpty('#autofill-website', data.website);
+  fillInputIfEmpty('#biz-website', data.website);
+  fillInputIfEmpty('#biz-industry', data.industry);
+
+  // Step 3
+  fillInputIfEmpty('#ai-name', data.business_name ? `${data.business_name} Assistant` : '');
+  fillInputIfEmpty('#ai-greeting', data.business_name ? `Hi! Welcome to ${data.business_name}. How can I help you today?` : '');
+  setToneIfEmpty(data.tone || 'friendly');
+  fillInputIfEmpty('#ai-always-know', data.description);
+  maybePopulateFaqs(data.faqs || []);
+
+  // Step 4 (based on selected business type)
+  const btype = state.businessType;
+  if (btype === 'ecommerce') {
+    maybePopulateProducts(data.products_services || []);
+  } else if (['service', 'clinic'].includes(btype)) {
+    maybePopulateServiceNames(data.products_services || []);
+  } else if (btype === 'restaurant') {
+    maybePopulateMenuItems(data.products_services || []);
+  } else if (btype === 'hotel') {
+    maybePopulateRooms(data.products_services || []);
+  } else {
+    fillInputIfEmpty('[name="offerings"]', stringifyOfferings(data.products_services || []));
+  }
+
+  fillInputIfEmpty('[name="address"]', data.address);
+  fillInputIfEmpty('[name="opening_hours"]', data.working_hours);
+}
+
+function fillInputIfEmpty(selector, value) {
+  if (!value) return;
+  const el = $(selector);
+  if (!el) return;
+  if ((el.value || '').toString().trim()) return;
+  el.value = value;
+}
+
+function setToneIfEmpty(tone) {
+  const selected = document.querySelector('input[name="tone"]:checked');
+  if (selected) return;
+  const toneInput = document.querySelector(`input[name="tone"][value="${tone}"]`) || document.querySelector('input[name="tone"][value="friendly"]');
+  if (toneInput) toneInput.checked = true;
+}
+
+function maybePopulateFaqs(faqs) {
+  if (!Array.isArray(faqs) || !faqs.length) return;
+  const list = $('#faqList');
+  if (!list) return;
+
+  const hasManualFaq = [...list.querySelectorAll('.ob-faq-item')].some((item) => {
+    const q = item.querySelector('[name="faq_q[]"]')?.value?.trim();
+    const a = item.querySelector('[name="faq_a[]"]')?.value?.trim();
+    return q || a;
+  });
+  if (hasManualFaq) return;
+
+  const addBtn = $('#addFaqBtn');
+  const first = list.querySelector('.ob-faq-item');
+  if (!first) return;
+  const firstQ = first.querySelector('[name="faq_q[]"]');
+  const firstA = first.querySelector('[name="faq_a[]"]');
+  if (firstQ && firstA) {
+    firstQ.value = faqs[0]?.question || '';
+    firstA.value = faqs[0]?.answer || '';
+  }
+  for (let i = 1; i < faqs.length; i += 1) {
+    addBtn?.click();
+    const items = list.querySelectorAll('.ob-faq-item');
+    const item = items[items.length - 1];
+    item.querySelector('[name="faq_q[]"]').value = faqs[i]?.question || '';
+    item.querySelector('[name="faq_a[]"]').value = faqs[i]?.answer || '';
+  }
+}
+
+function maybePopulateProducts(items) {
+  if (!Array.isArray(items) || !items.length) return;
+  const list = $('#productsList');
+  if (!list) return;
+  const filled = [...list.querySelectorAll('[name="product_name[]"]')].some((el) => el.value.trim());
+  if (filled) return;
+  const addBtn = $('#addProductBtn');
+  items.forEach((item, idx) => {
+    if (idx > 0) addBtn?.click();
+    const rows = list.querySelectorAll('.ob-product-item');
+    const row = rows[rows.length - 1];
+    row.querySelector('[name="product_name[]"]').value = item?.name || item?.title || '';
+    row.querySelector('[name="product_desc[]"]').value = item?.description || '';
+    row.querySelector('[name="product_price[]"]').value = item?.price || '';
+    row.querySelector('[name="product_variants[]"]').value = item?.variants || '';
+  });
+}
+
+function maybePopulateServiceNames(items) {
+  if (!Array.isArray(items) || !items.length) return;
+  const firstService = document.querySelector('[name="svc_name[]"]');
+  if (!firstService || firstService.value.trim()) return;
+  firstService.value = items[0]?.name || items[0]?.title || '';
+}
+
+function maybePopulateMenuItems(items) {
+  if (!Array.isArray(items) || !items.length) return;
+  const first = document.querySelector('[name="item_name[]"]');
+  if (!first || first.value.trim()) return;
+  first.value = items[0]?.name || items[0]?.title || '';
+}
+
+function maybePopulateRooms(items) {
+  if (!Array.isArray(items) || !items.length) return;
+  const first = document.querySelector('[name="room_type[]"]');
+  if (!first || first.value.trim()) return;
+  first.value = items[0]?.name || items[0]?.title || '';
+}
+
+function stringifyOfferings(items) {
+  if (!Array.isArray(items) || !items.length) return '';
+  return items
+    .map((item) => {
+      if (typeof item === 'string') return item;
+      const name = item?.name || item?.title || '';
+      const description = item?.description || '';
+      return `${name}${description ? ` - ${description}` : ''}`.trim();
+    })
+    .filter(Boolean)
+    .join('\n');
 }
 
 /* ─────────────────────────────────────────────

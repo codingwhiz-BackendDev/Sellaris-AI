@@ -29,6 +29,7 @@ class OnboardingProgress(models.Model):
     business_type = models.CharField(
         max_length=30, choices=BUSINESS_TYPE_CHOICES, blank=True, default=''
     )
+    ai_extracted_data = models.JSONField(null=True, blank=True)
     current_step  = models.PositiveSmallIntegerField(default=0)   # 0 = type selection
     status        = models.CharField(max_length=20, choices=STATUS_CHOICES, default='in_progress')
     created_at    = models.DateTimeField(auto_now_add=True)

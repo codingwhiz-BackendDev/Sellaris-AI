@@ -1,0 +1,11 @@
+# First time (will require QR scan)
+python manage.py send_whatsapp_messages
+
+# Subsequent runs (should auto-login)
+python manage.py send_whatsapp_messages
+
+# If you need to reset and scan QR again
+python manage.py send_whatsapp_messages --reset-profile
+
+# Skip login check entirely
+python manage.py send_whatsapp_messages --skip-login-check

@@ -37,7 +37,8 @@
     </div>
   </header>
 
-  <main class="ob-main" id="onboardingApp">
+  <main class="ob-main" id="onboardingApp" data-current-step="{{ current_step|default:0 }}"
+    data-business-type="{{ business_type|default:'' }}">
 
     <div class="ob-progress-wrap" aria-label="Onboarding progress">
       <div class="ob-progress-header">
@@ -163,41 +164,38 @@
           </div>
           <div class="ob-card__head">
             <h1 class="ob-card__title" id="step1-title">Business Profile</h1>
-            <p class="ob-card__sub">Tell us about your business so we can personalise your AI agent.</p>
+            <p class="ob-card__sub" id="step1-subtitle">Tell us about your business so we can personalise your AI agent.</p>
+          </div>
+          <div class="ob-section-label">✨ AI Auto-fill</div>
+          <div class="ob-row ob-row--2">
+            <div class="ob-field">
+              <label class="ob-label" for="autofill-website">Website URL</label>
+              <input class="ob-input" type="url" id="autofill-website" name="autofill_website_url"
+                placeholder="https://yourbusiness.com" autocomplete="url" />
+            </div>
+            <div class="ob-field">
+              <label class="ob-label" for="autofill-docs">Upload business document (PDF, DOCX, TXT)</label>
+              <input class="ob-input" type="file" id="autofill-docs" name="autofill_documents"
+                accept=".pdf,.docx,.txt" multiple />
+            </div>
+          </div>
+          <div class="ob-row">
+            <button type="button" class="ob-btn-ghost" id="autoFillAiBtn">Auto-fill with AI</button>
+            <span class="ob-save-status" id="autoFillStatus" aria-live="polite"></span>
           </div>
           <form class="ob-form" id="form-step-1" novalidate enctype="multipart/form-data">
             {% csrf_token %}
             <input type="hidden" name="step" value="1" />
-            <div class="ob-row ob-row--2">
+            <div class="ob-row">
               <div class="ob-field">
-                <label class="ob-label" for="biz-name">Business Name <span class="ob-req">*</span></label>
+                <label class="ob-label" id="biz-name-label" for="biz-name">Business Name <span class="ob-req">*</span></label>
                 <input class="ob-input" type="text" id="biz-name" name="business_name"
                   placeholder="e.g. LuxeThreads Lagos" required autocomplete="organization" />
                 <span class="ob-err" role="alert"></span>
               </div>
-              <div class="ob-field">
-                <label class="ob-label" for="biz-industry">Industry <span class="ob-req">*</span></label>
-                <div class="ob-select-wrap">
-                  <select class="ob-input ob-select" id="biz-industry" name="industry" required>
-                    <option value="">Select your industry</option>
-                    <option value="fashion">Fashion &amp; Apparel</option>
-                    <option value="electronics">Electronics</option>
-                    <option value="beauty">Beauty &amp; Cosmetics</option>
-                    <option value="food">Food &amp; Beverage</option>
-                    <option value="health">Health &amp; Wellness</option>
-                    <option value="education">Education</option>
-                    <option value="real_estate">Real Estate</option>
-                    <option value="hospitality">Hospitality</option>
-                    <option value="auto">Automotive</option>
-                    <option value="finance">Finance</option>
-                    <option value="services">Professional Services</option>
-                    <option value="other">Other</option>
-                  </select>
-                  <span class="ob-select-arrow" aria-hidden="true">▾</span>
-                </div>
-                <span class="ob-err" role="alert"></span>
-              </div>
             </div>
+            <input type="hidden" id="biz-industry" name="industry" value="" />
+            <input type="hidden" id="biz-website" name="website" value="" />
             <div class="ob-row ob-row--2">
               <div class="ob-field">
                 <label class="ob-label" for="biz-email">Business Email <span class="ob-req">*</span></label>
@@ -211,12 +209,6 @@
                   autocomplete="tel" />
                 <span class="ob-err" role="alert"></span>
               </div>
-            </div>
-            <div class="ob-field">
-              <label class="ob-label" for="biz-website">Website URL</label>
-              <input class="ob-input" type="url" id="biz-website" name="website" placeholder="https://yourbusiness.com"
-                autocomplete="url" />
-              <span class="ob-err" role="alert"></span>
             </div>
             <div class="ob-field">
               <label class="ob-label" for="biz-desc">Short Business Description <span class="ob-req">*</span></label>
